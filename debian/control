@@ -16,4 +16,4 @@ Description: collection of text games from BSD systems - nonfree
  they had to be broken off from the main bsdgames package and placed in
  non-free.
  .
- Includes these games: rogue, hack
+ Includes only the 'rogue' game.

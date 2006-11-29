@@ -1,8 +1,16 @@
-bsdgames-nonfree (2.14-1) UNRELEASED; urgency=low
+bsdgames-nonfree (2.14-1) unstable; urgency=high
 
-  * (NOT RELEASED YET) New upstream release
+  * New upstream version:
+      - fixes buffer overflow in rogue (priviledge escalation to
+      'games' since it's setgid)
+      - removes hack (Closes: #188279) 
+  * Note: I'm hurrying this upload due to the security fix for rogue
+  (see SECURITY). However, with the security fix changes 'rogue' will
+  no longer save on empty files. Also, there is no transition done from
+  previous hack save files (which should now be handled by 'bsdgames'
+  which now provides 'hack')
 
- -- Aaron M. Ucko <ucko@debian.org>  Wed, 29 Nov 2006 11:22:33 -0500
+ -- Javier Fernandez-Sanguino Pen~a <jfs@computer.org>  Wed,  9 Apr 2003 10:10:27 +0200
 
 bsdgames-nonfree (2.12-5) unstable; urgency=low
 
