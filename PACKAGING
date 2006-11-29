@@ -55,8 +55,7 @@ BSD Users' Supplementary Documents for trek and rogue
 versions thereof), the AUTHORS and THANKS files, and the year 2000
 statement YEAR2000.  Note that the trek manpage contains a reference
 to /usr/doc/trek, which should be updated to point to where you put
-trek.me or a formatted version.  As noted below, it is better to
-update trek.6.in (before configure) than trek.6.
+trek.me or a formatted version.
 
 Assuming you distribute source for your package (I do not believe any
 of the games have licences requiring this), and separate your patches
@@ -119,6 +118,9 @@ some jurisdictions may be prohibited or considered unsuitable for
 minors; this includes but is not limited to the offensive fortunes.
 It is your responsibility to determine and apply any restriction on
 your distribution of the games that may be necessary in consequence.
+
+This package contains cryptographic software (caesar and rot13).  See
+the warnings in README about this.
 
 Notification of new versions
 ============================

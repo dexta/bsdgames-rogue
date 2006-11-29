@@ -1,3 +1,9 @@
+bsdgames-nonfree (2.14-1) UNRELEASED; urgency=low
+
+  * (NOT RELEASED YET) New upstream release
+
+ -- Aaron M. Ucko <ucko@debian.org>  Wed, 29 Nov 2006 11:22:33 -0500
+
 bsdgames-nonfree (2.12-5) unstable; urgency=low
 
   * Added save/ dir for hack with appropiate permissions (Closes: #174758)
