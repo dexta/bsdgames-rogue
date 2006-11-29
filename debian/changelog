@@ -1,3 +1,9 @@
+bsdgames-nonfree (2.15-1) UNRELEASED; urgency=low
+
+  * (NOT RELEASED YET) New upstream release
+
+ -- Aaron M. Ucko <ucko@debian.org>  Wed, 29 Nov 2006 11:32:47 -0500
+
 bsdgames-nonfree (2.14-2) unstable; urgency=low
 
   * config.params:
