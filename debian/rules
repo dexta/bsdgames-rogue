@@ -1,12 +1,16 @@
 #!/usr/bin/make -f
-# Sample debian/rules that uses debhelper. GNU copyright 1997 by Joey Hess.
+# Debhelper-based rules; GNU copyright 1997 by Joey Hess.
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+# Rename to rogue?
+PKG=bsdgames-nonfree
+
 build: build-stamp
 build-stamp:
 	dh_testdir
+# NB: not in the least Autoconf-based.
 	./configure
 	$(MAKE)
 	touch build-stamp
@@ -27,36 +31,35 @@ binary-arch: build
 	dh_testdir
 	dh_testroot
 	dh_clean
-	dh_installdirs
-	$(MAKE) PREFIX=`pwd`/debian/tmp install
-#	-rmdir debian/tmp/var/tmp
-#	-rmdir debian/tmp/var
-#	-rmdir debian/tmp/usr/lib/games/bsdgames
-#	-rmdir debian/tmp/usr/lib/games
-#	-rmdir debian/tmp/usr/lib
-	dh_installdocs README.non-free rogue/USD.doc/rogue.me AUTHORS \
-		BUGS ChangeLog ChangeLog.0 SECURITY THANKS TODO YEAR2000
+	dh_installdirs -a
+	$(MAKE) INSTALL_PREFIX=`pwd`/debian/$(PKG) install
+#	-rmdir debian/$(PKG)/var/tmp
+#	-rmdir debian/$(PKG)/var
+#	-rmdir debian/$(PKG)/usr/lib/games/bsdgames
+#	-rmdir debian/$(PKG)/usr/lib/games
+#	-rmdir debian/$(PKG)/usr/lib
+	dh_installdocs -a
 
-	cp rogue/CHANGES debian/tmp/usr/share/doc/bsdgames-nonfree/CHANGES.rogue
-	dh_installexamples
-	dh_installmenu
-#	dh_installinit
-	dh_installcron
-	dh_installmanpages
-#	dh_undocumented
-	dh_installchangelogs -k NEWS
-	dh_strip
-	dh_compress
-	dh_fixperms
-	# Don't include zero byte score files in package, they are
+	cp rogue/CHANGES debian/$(PKG)/usr/share/doc/$(PKG)/CHANGES.rogue
+#	dh_installexamples -a
+	dh_installmenu -a
+#	dh_installinit -a
+#	dh_installcron -a
+	dh_installmanpages -a
+#	dh_undocumented -a
+	dh_installchangelogs -a -k NEWS
+	dh_strip -a
+	dh_compress -a
+	dh_fixperms -a -X/usr/games/rogue
+	# Don't include zero-byte score files in package; they are
 	# touched in the postinst.
-	-rm -f debian/tmp/var/games/bsdgames-nonfree/rogue.scores 
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-#	dh_makeshlibs
-	dh_md5sums
-	dh_builddeb
+	-rm -f debian/$(PKG)/var/games/bsdgames-nonfree/rogue.scores 
+	dh_installdeb -a
+	dh_shlibdeps -a
+	dh_gencontrol -a
+#	dh_makeshlibs -a
+	dh_md5sums -a
+	dh_builddeb -a
 
 source diff:                                                                  
 	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false

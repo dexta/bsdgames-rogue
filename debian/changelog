@@ -1,3 +1,30 @@
+bsdgames-nonfree (2.14-2) unstable; urgency=low
+
+  * config.params:
+    - Make setgid games again (supposedly safe now...)
+    - Support "noopt" in DEB_BUILD_OPTIONS.
+    - debian/tmp -> debian/bsdgames-nonfree.
+    - Miscellaneous typo fixes.
+  * configure: Revert changes to defaults (config.params should suffice).
+  * debian/changelog: Removed obsolete emacs settings.
+  * debian/compat: Created (specifying version 4).
+  * debian/control:
+    - New maintainer, with Javier's blessing; my thanks to Joey H. and him
+      for maintaining the package thus far.
+    - Bumped standards version and build dependency on debhelper.
+    - Rewrote description to reflect single-game situation.
+  * debian/copyright:
+    - Updated version number in file name.
+    - Cited recent maintainers.
+    - Generally cleaned up a bit.
+  * debian/docs: New (split out from debian/rules).
+  * debian/postinst: Ensure $VARDIR is actually executable.
+  * debian/rules:
+    - Modernized (various cleanups).
+    - Exclude /usr/games/rogue from call to dh_fixperms.
+
+ -- Aaron M. Ucko <ucko@debian.org>  Wed,  9 Apr 2003 22:20:11 -0400
+
 bsdgames-nonfree (2.14-1) unstable; urgency=high
 
   * New upstream version:
@@ -252,7 +279,3 @@ bsdgames-nonfree (1.3-1) unstable; urgency=low
   * First release.
 
  -- Joey Hess <joeyh@master.debian.org>  Sat, 22 Mar 1997 01:08:25 -0500
-
-Local variables:
-mode: debian-changelog
-End:
