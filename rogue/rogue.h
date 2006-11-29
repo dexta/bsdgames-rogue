@@ -1,4 +1,4 @@
-/*	$NetBSD: rogue.h,v 1.11 1999/09/13 17:14:08 jsm Exp $	*/
+/*	$NetBSD: rogue.h,v 1.13 2002/10/01 14:18:57 mrg Exp $	*/
 
 /*
  * Copyright (c) 1988, 1993
@@ -192,9 +192,10 @@
 
 #define MAX_OPT_LEN 40
 
+#define MAX_ID_TITLE_LEN 64
 struct id {
 	short value;
-	char *title;
+	char title[MAX_ID_TITLE_LEN];
 	char *real;
 	unsigned short id_status;
 };
@@ -602,7 +603,6 @@ void	md_sleep __P((int));
 void	md_slurp __P((void));
 void	message __P((const char *, boolean));
 void	mix_colors __P((void));
-void	mix_colors __P((void));
 void	mix_random_rooms __P((void));
 int	mon_can_go __P((const object *, int, int));
 int	mon_damage __P((object *, short));
@@ -635,7 +635,6 @@ void	place_at __P((object *, int, int));
 void	plant_gold __P((int, int, boolean));
 void	play_level __P((void));
 void	player_init __P((void));
-void	player_init __P((void));
 void	potion_heal __P((int));
 int	pr_com_id __P((int));
 int	pr_motion_char __P((int));
@@ -660,7 +659,7 @@ int	rand_percent __P((int));
 void	rand_place __P((object *));
 void	read_pack __P((object *, FILE *, boolean));
 void	read_scroll __P((void));
-void	read_string __P((char *, FILE *));
+void	read_string __P((char *, FILE *, size_t));
 void	recursive_deadend __P((short, const short *, short, short));
 boolean	reg_move __P((void));
 void	relight __P((void));
@@ -698,11 +697,9 @@ void	sound_bell __P((void));
 void	special_hit __P((object *));
 void	srrandom __P((int));
 void	start_window __P((void));
-void	start_window __P((void));
 void	steal_gold __P((object *));
 void	steal_item __P((object *));
 void	sting __P((object *));
-void	stop_window __P((void));
 void	stop_window __P((void));
 void	take_a_nap __P((void));
 void	take_from_pack __P((object *, object *));
@@ -767,8 +764,9 @@ extern	boolean	sustain_strength;
 extern	boolean	trap_door;
 extern	boolean	wizard;
 extern	char	hit_message[];
-extern	char	hunger_str[];
-extern	char	login_name[];
+#define HUNGER_STR_LEN 8
+extern	char	hunger_str[HUNGER_STR_LEN];
+extern	char	login_name[MAX_OPT_LEN];
 extern	const char   *byebye_string;
 extern	const char   *curse_message;
 extern	const char   *error_file;
