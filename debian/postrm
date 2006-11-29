@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+VARDIR=/var/games/bsdgames-nonfree
+SCOREFILES="$VARDIR/rogue.scores $VARDIR/hack/perm $VARDIR/hack/record"
+
+# Remove high score files on purge.
+if [ "$1" = "purge" ]; then
+	rm -f $SCOREFILES
+fi
+
+rmdir -p $VARDIR/hack 2>/dev/null || true
+
+#DEBHELPER#

@@ -1,0 +1,19 @@
+Source: bsdgames-nonfree
+Section: non-free/games
+Priority: optional
+Maintainer: Javier Fernandez-Sanguino Pen~a <jfs@computer.org>
+Build-Depends: debhelper (>> 3.0.0), libncurses5-dev
+Standards-Version: 3.2.1.0
+
+Package: bsdgames-nonfree
+Architecture: any
+Depends: ${shlibs:Depends}
+Conflicts: bsdgames (<< 2.5)
+Suggests: bsdgames
+Description: collection of text games from BSD systems - nonfree
+ This is a collection of some of the text-based games that are common on 
+ BSD systems. The games in this package may not be distributed freely, so
+ they had to be broken off from the main bsdgames package and placed in
+ non-free.
+ .
+ Includes these games: rogue, hack

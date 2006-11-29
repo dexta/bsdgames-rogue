@@ -1,0 +1,71 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper. GNU copyright 1997 by Joey Hess.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+build: build-stamp
+build-stamp:
+	dh_testdir
+	./configure
+	$(MAKE)
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+	-$(MAKE) -f GNUmakefile distclean
+	dh_clean
+
+# Build architecture-independent files here.
+binary-indep: build
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build
+	dh_testdir
+	dh_testroot
+	dh_clean
+	dh_installdirs
+	$(MAKE) PREFIX=`pwd`/debian/tmp install
+#	-rmdir debian/tmp/var/tmp
+#	-rmdir debian/tmp/var
+#	-rmdir debian/tmp/usr/lib/games/bsdgames
+#	-rmdir debian/tmp/usr/lib/games
+#	-rmdir debian/tmp/usr/lib
+	dh_installdocs README.non-free rogue/USD.doc/rogue.me AUTHORS \
+		BUGS ChangeLog ChangeLog.0 SECURITY THANKS TODO YEAR2000
+
+	cp rogue/CHANGES debian/tmp/usr/share/doc/bsdgames-nonfree/CHANGES.rogue
+	dh_installexamples
+	dh_installmenu
+#	dh_installinit
+	dh_installcron
+	dh_installmanpages
+#	dh_undocumented
+	dh_installchangelogs -k NEWS
+	dh_strip
+	dh_compress
+	dh_fixperms
+	chown root.games debian/tmp/usr/games/rogue debian/tmp/usr/games/hack
+	chmod g+s debian/tmp/usr/games/rogue debian/tmp/usr/games/hack
+	# Don't include zero byte score files in package, they are
+	# touched in the postinst.
+	-rm -f debian/tmp/var/games/bsdgames-nonfree/rogue.scores \
+	       debian/tmp/var/games/bsdgames-nonfree/hack/{perm,record}
+	# This directory needs to be writable by games.
+	chown -R root.games debian/tmp/var/games/bsdgames-nonfree/hack
+	chmod -R g+rws debian/tmp/var/games/bsdgames-nonfree/hack
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+#	dh_makeshlibs
+	dh_md5sums
+	dh_builddeb
+
+source diff:                                                                  
+	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary

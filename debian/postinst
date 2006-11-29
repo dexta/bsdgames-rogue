@@ -1,0 +1,24 @@
+#!/bin/sh -e
+
+VARDIR=/var/games/bsdgames-nonfree
+SCOREFILES="$VARDIR/rogue.scores $VARDIR/hack/perm $VARDIR/hack/record"
+OLDDIR=/var/lib/games/bsdgames-nonfree
+
+# See if the files exist in an old pre-FHS directory and move them if so.
+if [ -d $OLDDIR ]; then
+	if [ -e $OLDDIR/rogue.scores ]; then
+		mv -f $OLDDIR/rogue.scores $VARDIR/rogue.scores
+	fi
+	for file in perm record; do
+		if [ -e $OLDDIR/hack/$file ]; then
+			mv -f $OLDDIR/hack/$file $VARDIR/hack/$file
+		fi
+	done
+	rmdir -p $OLDDIR/hack 2>/dev/null || true
+fi
+
+touch $SCOREFILES
+chown root.games $SCOREFILES
+chmod 664 $SCOREFILES
+
+#DEBHELPER#
