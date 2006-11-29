@@ -1,8 +1,11 @@
+# -*- shell-script-mode -*-
+pkg=bsdgames-nonfree
+
 # Don't run configure interactively.
 bsd_games_cfg_non_interactive=y
 
 # Install into here for building the package.
-bsd_games_cfg_install_prefix=`pwd`/debian/bsdgames-nonfree
+bsd_games_cfg_install_prefix=`pwd`/debian/$pkg
 
 # Do not build or install these games:
 bsd_games_cfg_no_build_dirs="dm banner fortune factor"
@@ -11,11 +14,13 @@ bsd_games_cfg_no_build_dirs="dm banner fortune factor"
 # change this later.
 bsd_games_cfg_sbindir=/usr/sbin
 
+bsd_games_cfg_docdir=/usr/share/doc/$pkg
+
 # Debian doesn't like cluttering up the /usr/*/games/ dirs too much,
 # use a subdir. /var too.
-bsd_games_cfg_usrlibdir=/usr/lib/games/bsdgames-nonfree
-bsd_games_cfg_sharedir=/usr/share/games/bsdgames-nonfree
-bsd_games_cfg_varlibdir=/var/games/bsdgames-nonfree
+bsd_games_cfg_usrlibdir=/usr/lib/games/$pkg
+bsd_games_cfg_sharedir=/usr/share/games/$pkg
+bsd_games_cfg_varlibdir=/var/games/$pkg
 
 ## Do not do chown now, we aren't running as root.
 #bsd_games_cfg_do_chown=n
