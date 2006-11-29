@@ -3,7 +3,7 @@ Section: non-free/games
 Priority: optional
 Maintainer: Aaron M. Ucko <ucko@debian.org>
 Build-Depends: debhelper (>> 4.0.0), libncurses5-dev
-Standards-Version: 3.5.9.0
+Standards-Version: 3.6.1.0
 
 Package: bsdgames-nonfree
 Architecture: any

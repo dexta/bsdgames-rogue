@@ -1,26 +1,39 @@
-This is a Debian prepackaged version of the BSD games package, non-free
-section.
+This package was originally debianized by Joey Hess <joeyh@debian.org>
+in March 1997, and subsequently maintained (in succession) by Javier
+Fernandez-Sanguino Peña <jfs@computer.org> and Aaron M. Ucko
+<ucko@debian.org>.
 
-This package was put together by Joey Hess <joeyh@master.debian.org>, using
-sources from
+It was downloaded from ftp://metalab.unc.edu:/pub/Linux/games/ .
 
-	ftp://metalab.unc.edu:/pub/Linux/games/bsd-games-non-free-2.14.tar.gz
+Primary upstream authors: Timothy Stoehr, Michael C. Toy, Ken Arnold,
+and Glenn Wichman.
 
-and subsequently maintained (in succession) by Javier Fernandez-Sanguino Pen~a
-<jfs@computer.org> and Aaron M. Ucko <ucko@debian.org>
+Copyright:
+    Game source files copyright © 1986, 1988, 1990, 1993 The Regents of
+    the University of California.  Upstream build system and support
+    library copyright © 1997-2003 Joseph Samuel Myers.  In both cases,
+    all rights reserved.
 
-This package currently only contains Rogue, which falls under some combination
-of the standard BSD copyright (/usr/share/common-licenses/BSD) and the notice
-quoted below:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted under the terms of the BSD License,
+    with the following additional (non-free) restrictions:
 
-/*
- * main.c
- *
- * This source herein may be modified and/or distributed by anybody who
- * so desires, with the following restrictions:
- *    1.)  No portion of this notice shall be removed.
- *    2.)  Credit shall not be taken for the creation of this source.
- *    3.)  This code is not to be traded, sold, or used for personal
- *         gain or profit.
- *
- */
+    1.)  No portion of this notice shall be removed.
+    2.)  Credit shall not be taken for the creation of this source.
+    3.)  This code is not to be traded, sold, or used for personal
+         gain or profit.
+
+    THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+    OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+    HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+    SUCH DAMAGE.
+
+On Debian systems, the complete text of the BSD License can be 
+found in `/usr/share/common-licenses/BSD'.

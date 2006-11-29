@@ -1,8 +1,10 @@
-bsdgames-nonfree (2.15-1) UNRELEASED; urgency=low
+bsdgames-nonfree (2.15-1) unstable; urgency=low
 
-  * (NOT RELEASED YET) New upstream release
+  * New upstream release.
+  * debian/control: standards-version 3.6.1 (no changes needed).
+  * debian/copyright: rework once more; should now contain all needed info.
 
- -- Aaron M. Ucko <ucko@debian.org>  Wed, 29 Nov 2006 11:32:47 -0500
+ -- Aaron M. Ucko <ucko@debian.org>  Mon, 22 Dec 2003 22:20:30 -0500
 
 bsdgames-nonfree (2.14-2) unstable; urgency=low
 
