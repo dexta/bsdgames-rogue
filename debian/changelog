@@ -1,3 +1,9 @@
+bsdgames-nonfree (2.16-1) UNRELEASED; urgency=low
+
+  * (NOT RELEASED YET) New upstream release
+
+ -- Aaron M. Ucko <ucko@debian.org>  Wed, 29 Nov 2006 11:35:24 -0500
+
 bsdgames-nonfree (2.15-2) unstable; urgency=low
 
   * debian/postinst: Use POSIX-blessed chown syntax. (Closes: #229199)
