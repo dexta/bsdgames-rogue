@@ -3,7 +3,7 @@ in March 1997, and subsequently maintained (in succession) by Javier
 Fernandez-Sanguino Peña <jfs@computer.org> and Aaron M. Ucko
 <ucko@debian.org>.
 
-It was downloaded from ftp://metalab.unc.edu:/pub/Linux/games/ .
+It was downloaded from ftp://ibiblio.org:/pub/Linux/games/ .
 
 Primary upstream authors: Timothy Stoehr, Michael C. Toy, Ken Arnold,
 and Glenn Wichman.
@@ -11,7 +11,7 @@ and Glenn Wichman.
 Copyright:
     Game source files copyright © 1986, 1988, 1990, 1993 The Regents of
     the University of California.  Upstream build system and support
-    library copyright © 1997-2004 Joseph Samuel Myers.  In both cases,
+    library copyright © 1997-2005 Joseph Samuel Myers.  In both cases,
     all rights reserved.
 
     Redistribution and use in source and binary forms, with or without
