@@ -1,71 +1,23 @@
 #!/usr/bin/make -f
-# Debhelper-based rules; GNU copyright 1997 by Joey Hess.
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/makefile.mk
 
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+DEB_DH_INSTALLCHANGELOGS_ARGS = -k
+DEB_INSTALL_CHANGELOGS_ALL    = NEWS
+DEB_FIXPERMS_EXCLUDE          = /usr/games/rogue
+DEB_MAKE_CLEAN_TARGET         = -f GNUmakefile distclean
+DEB_MAKE_INSTALL_TARGET       = INSTALL_PREFIX=$(DEB_DESTDIR) install
 
-# Rename to rogue?
-PKG=bsdgames-nonfree
-VRMSDIR=debian/$(PKG)/usr/share/vrms/reasons
+VRMSDIR = $(DEB_DESTDIR)/usr/share/vrms/reasons
+DOCDIR  = $(DEB_DESTDIR)/usr/share/doc/$(cdbs_curpkg)
 
-build: build-stamp
-build-stamp:
-	dh_testdir
-# NB: not in the least Autoconf-based.
+common-configure-arch common-configure-indep:: common-configure-impl
+common-configure-impl:: $(DEB_BUILDDIR)/Makeconfig
+$(DEB_BUILDDIR)/Makeconfig:
 	./configure
-	$(MAKE)
-	touch build-stamp
 
-clean:
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp
-	-$(MAKE) -f GNUmakefile distclean
-	dh_clean
-
-# Build architecture-independent files here.
-binary-indep: build
-# We have nothing to do by default.
-
-# Build architecture-dependent files here.
-binary-arch: build
-	dh_testdir
-	dh_testroot
-	dh_clean
-	dh_installdirs -a
-	$(MAKE) INSTALL_PREFIX=`pwd`/debian/$(PKG) install
-#	-rmdir debian/$(PKG)/var/tmp
-#	-rmdir debian/$(PKG)/var
-#	-rmdir debian/$(PKG)/usr/lib/games/bsdgames
-#	-rmdir debian/$(PKG)/usr/lib/games
-#	-rmdir debian/$(PKG)/usr/lib
-	dh_installdocs -a
+binary-post-install/bsdgames-nonfree::
 	mkdir -p $(VRMSDIR)
-	echo "$(PKG): No commercial use" > $(VRMSDIR)/$(PKG)
-
-	cp rogue/CHANGES debian/$(PKG)/usr/share/doc/$(PKG)/CHANGES.rogue
-#	dh_installexamples -a
-	dh_installmenu -a
-#	dh_installinit -a
-#	dh_installcron -a
-	dh_installmanpages -a
-#	dh_undocumented -a
-	dh_installchangelogs -a -k NEWS
-	dh_strip -a
-	dh_compress -a
-	dh_fixperms -a -X/usr/games/rogue
-	# Don't include zero-byte score files in package; they are
-	# touched in the postinst.
-	-rm -f debian/$(PKG)/var/games/bsdgames-nonfree/rogue.scores 
-	dh_installdeb -a
-	dh_shlibdeps -a
-	dh_gencontrol -a
-#	dh_makeshlibs -a
-	dh_md5sums -a
-	dh_builddeb -a
-
-source diff:                                                                  
-	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
-
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary
+	echo "$(cdbs_curpkg): No commercial use" > $(VRMSDIR)/$(cdbs_curpkg)
+	cp rogue/CHANGES $(DOCDIR)/CHANGES.rogue
+	-rm -f $(DEB_DESTDIR)/var/games/bsdgames-nonfree/rogue.scores 
