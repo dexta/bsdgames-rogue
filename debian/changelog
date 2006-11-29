@@ -1,3 +1,11 @@
+bsdgames-nonfree (2.15-2) unstable; urgency=low
+
+  * debian/postinst: Use POSIX-blessed chown syntax. (Closes: #229199)
+  * debian/rules: Tell vrms (and other interested parties) that the
+    license forbids commercial use.
+
+ -- Aaron M. Ucko <ucko@debian.org>  Fri, 23 Jan 2004 19:16:31 -0500
+
 bsdgames-nonfree (2.15-1) unstable; urgency=low
 
   * New upstream release.

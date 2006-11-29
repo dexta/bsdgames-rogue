@@ -6,6 +6,7 @@
 
 # Rename to rogue?
 PKG=bsdgames-nonfree
+VRMSDIR=debian/$(PKG)/usr/share/vrms/reasons
 
 build: build-stamp
 build-stamp:
@@ -39,6 +40,8 @@ binary-arch: build
 #	-rmdir debian/$(PKG)/usr/lib/games
 #	-rmdir debian/$(PKG)/usr/lib
 	dh_installdocs -a
+	mkdir -p $(VRMSDIR)
+	echo "$(PKG): No commercial use" > $(VRMSDIR)/$(PKG)
 
 	cp rogue/CHANGES debian/$(PKG)/usr/share/doc/$(PKG)/CHANGES.rogue
 #	dh_installexamples -a

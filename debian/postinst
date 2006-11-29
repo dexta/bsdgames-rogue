@@ -14,7 +14,7 @@ fi
 # Older versions may have set bad permissions
 chmod a+x $VARDIR
 touch $SCOREFILES
-chown root.games $SCOREFILES
+chown root:games $SCOREFILES
 chmod 664 $SCOREFILES
 
 #DEBHELPER#
