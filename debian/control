@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Aaron M. Ucko <ucko@debian.org>
 Build-Depends: cdbs, debhelper (>> 6), libncurses5-dev
 Standards-Version: 3.7.3
+XS-Autobuild: yes
 
 Package: bsdgames-nonfree
 Architecture: any
