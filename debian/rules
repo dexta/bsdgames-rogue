@@ -4,6 +4,7 @@ include /usr/share/cdbs/1/class/makefile.mk
 
 DEB_DH_INSTALLCHANGELOGS_ARGS = -k
 DEB_INSTALL_CHANGELOGS_ALL    = NEWS
+DEB_INSTALL_DOCS_ALL          = # specified via debian/docs instead
 DEB_FIXPERMS_EXCLUDE          = /usr/games/rogue
 DEB_MAKE_CLEAN_TARGET         = -f GNUmakefile distclean
 DEB_MAKE_INSTALL_TARGET       = INSTALL_PREFIX=$(DEB_DESTDIR) install
