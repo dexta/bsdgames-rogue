@@ -2,7 +2,7 @@ Source: bsdgames-nonfree
 Section: non-free/games
 Priority: optional
 Maintainer: Aaron M. Ucko <ucko@debian.org>
-Build-Depends: cdbs, debhelper (>> 6), libncurses5-dev
+Build-Depends: debhelper (>> 7), dpkg-dev (>= 1.14.17), libncurses5-dev
 Standards-Version: 3.7.3
 XS-Autobuild: yes
 

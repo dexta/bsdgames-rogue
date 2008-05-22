@@ -1,24 +1,33 @@
 #!/usr/bin/make -f
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/makefile.mk
+pkg         = bsdgames-nonfree
+DEB_DESTDIR = $(CURDIR)/debian/$(pkg)
 
-DEB_DH_INSTALLCHANGELOGS_ARGS = -k
-DEB_INSTALL_CHANGELOGS_ALL    = NEWS
-DEB_INSTALL_DOCS_ALL          = # specified via debian/docs instead
-DEB_FIXPERMS_EXCLUDE          = /usr/games/rogue
-DEB_MAKE_CLEAN_TARGET         = -f GNUmakefile distclean
-DEB_MAKE_INSTALL_TARGET       = INSTALL_PREFIX=$(DEB_DESTDIR) install
+build:
+	dh build
 
-VRMSDIR = $(DEB_DESTDIR)/usr/share/vrms/reasons
-DOCDIR  = $(DEB_DESTDIR)/usr/share/doc/$(cdbs_curpkg)
+clean:
+	dh_testdir
+	dh_auto_clean -- -f GNUmakefile distclean
+	dh_clean
 
-common-configure-arch common-configure-indep:: common-configure-impl
-common-configure-impl:: $(DEB_BUILDDIR)/Makeconfig
-$(DEB_BUILDDIR)/Makeconfig:
-	./configure
+install: build
+	dh install --until dh_prep
+	dh_auto_install -- INSTALL_PREFIX=$(DEB_DESTDIR)
+	-rm -f $(DEB_DESTDIR)/var/games/$(pkg)/rogue.scores 
+	mkdir -p $(DEB_DESTDIR)/usr/share/vrms/reasons
+	echo "$(pkg): No commercial use" \
+	    > $(DEB_DESTDIR)/usr/share/vrms/reasons/$(pkg)
+	cp rogue/CHANGES $(DEB_DESTDIR)/usr/share/doc/$(pkg)/CHANGES.rogue
+	dh_installchangelogs -k NEWS
+	dh install --remaining --before dh_fixperms
+	dh_fixperms -X/usr/games/rogue
 
-binary-post-install/bsdgames-nonfree::
-	mkdir -p $(VRMSDIR)
-	echo "$(cdbs_curpkg): No commercial use" > $(VRMSDIR)/$(cdbs_curpkg)
-	cp rogue/CHANGES $(DOCDIR)/CHANGES.rogue
-	-rm -f $(DEB_DESTDIR)/var/games/bsdgames-nonfree/rogue.scores 
+binary-arch: install
+	dh binary-arch
+
+binary-indep: install
+	dh binary-indep
+
+binary: binary-arch # binary-indep
+
+.PHONY: build clean install binary binary-arch binary-indep
