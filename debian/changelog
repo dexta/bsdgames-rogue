@@ -1,3 +1,9 @@
+bsdgames-nonfree (2.17-3) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Aaron M. Ucko <ucko@debian.org>  Thu, 22 May 2008 18:15:01 -0400
+
 bsdgames-nonfree (2.17-2) unstable; urgency=low
 
   * Convert to cdbs and debhelper 6.
