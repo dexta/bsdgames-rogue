@@ -1,7 +1,9 @@
 This package was originally debianized by Joey Hess <joeyh@debian.org>
 in March 1997, and subsequently maintained (in succession) by Javier
 Fernandez-Sanguino Peña <jfs@computer.org> and Aaron M. Ucko
-<ucko@debian.org>.
+<ucko@debian.org>.  Due to the license restrictions described below,
+it is formally part of Debian's non-free category rather than Debian
+proper ("main").
 
 It was downloaded from ftp://ibiblio.org:/pub/Linux/games/ .
 
