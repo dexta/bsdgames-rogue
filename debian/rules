@@ -2,32 +2,22 @@
 pkg         = bsdgames-nonfree
 DEB_DESTDIR = $(CURDIR)/debian/$(pkg)
 
-build:
-	dh build
+%:
+	dh $@
 
-clean:
-	dh_testdir
+override_dh_auto_clean:
 	dh_auto_clean -- -f GNUmakefile distclean
-	dh_clean
 
-install: build
-	dh install --until dh_prep
+override_dh_auto_install:
 	dh_auto_install -- INSTALL_PREFIX=$(DEB_DESTDIR)
 	-rm -f $(DEB_DESTDIR)/var/games/$(pkg)/rogue.scores 
 	mkdir -p $(DEB_DESTDIR)/usr/share/vrms/reasons
 	echo "$(pkg): No commercial use" \
 	    > $(DEB_DESTDIR)/usr/share/vrms/reasons/$(pkg)
 	cp rogue/CHANGES $(DEB_DESTDIR)/usr/share/doc/$(pkg)/CHANGES.rogue
+
+override_dh_installchangelogs:
 	dh_installchangelogs -k NEWS
-	dh install --remaining --before dh_fixperms
+
+override_dh_fixperms:
 	dh_fixperms -X/usr/games/rogue
-
-binary-arch: install
-	dh binary-arch
-
-binary-indep: install
-	dh binary-indep
-
-binary: binary-arch # binary-indep
-
-.PHONY: build clean install binary binary-arch binary-indep

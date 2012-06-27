@@ -1,8 +1,13 @@
 bsdgames-nonfree (2.17-4) UNRELEASED; urgency=low
 
   * NOT YET RELEASED.
+  * debian/compat: Advance to Debhelper 9.
+  * debian/control:
+    - Build-Depends: debhelper (>= 9), implying a new enough dpkg-dev.
+  * debian/rules:
+    - Minimize further by switching to override_dh_* style.
 
- -- Aaron M. Ucko <ucko@debian.org>  Wed, 27 Jun 2012 17:53:38 -0400
+ -- Aaron M. Ucko <ucko@debian.org>  Wed, 27 Jun 2012 17:59:20 -0400
 
 bsdgames-nonfree (2.17-3) unstable; urgency=low
 
