@@ -2,11 +2,22 @@
 pkg         = bsdgames-nonfree
 DEB_DESTDIR = $(CURDIR)/debian/$(pkg)
 
+export DEB_BUILD_MAINT_OPTIONS=hardening=+all
+
+CFLAGS  := $(shell dpkg-buildflags --get CFLAGS) \
+           $(shell dpkg-buildflags --get CPPFLAGS)
+LDFLAGS := $(shell dpkg-buildflags --get LDFLAGS)
+
 %:
 	dh $@
 
 override_dh_auto_clean:
 	dh_auto_clean -- -f GNUmakefile distclean
+
+override_dh_auto_configure:
+	bsd_games_cfg_other_cflags="$(CFLAGS)" \
+	  bsd_games_cfg_other_ldflags="$(LDFLAGS)" \
+	    ./configure
 
 override_dh_auto_install:
 	dh_auto_install -- INSTALL_PREFIX=$(DEB_DESTDIR)
