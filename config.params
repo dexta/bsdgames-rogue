@@ -34,9 +34,9 @@ bsd_games_cfg_gzip_manpages=n
 # Policy says to use /usr/bin/pager by default.
 bsd_games_cfg_pager=/usr/bin/pager
 
-case "$DEB_BUILD_OPTIONS" in
-    *noopt*) bsd_games_optimize_flags=-g ;;
-esac
+# Leave off; debian/rules supplies all appropriate flags via
+# bsd_games_cfg_other_{c,ld}flags
+bsd_games_cfg_optimize_flags=
 
 # Make setgid games.
 bsd_games_cfg_score_game_group=games
