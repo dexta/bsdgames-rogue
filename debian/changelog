@@ -1,6 +1,5 @@
-bsdgames-nonfree (2.17-4) UNRELEASED; urgency=low
+bsdgames-nonfree (2.17-4) unstable; urgency=low
 
-  * NOT YET RELEASED.
   * config.params: defer to debian/rules for build flags (which weren't
     set quite as intended in noopt mode anyway, per a longstanding typo).
   * debian/compat: Advance to Debhelper 9.
@@ -16,7 +15,7 @@ bsdgames-nonfree (2.17-4) UNRELEASED; urgency=low
     - Pass in dpkg's recommended flags, including full hardening flags.
   * (debian/).gitignore: ignore generated files.
 
- -- Aaron M. Ucko <ucko@debian.org>  Wed, 27 Jun 2012 21:41:47 -0400
+ -- Aaron M. Ucko <ucko@debian.org>  Wed, 27 Jun 2012 21:43:37 -0400
 
 bsdgames-nonfree (2.17-3) unstable; urgency=low
 
