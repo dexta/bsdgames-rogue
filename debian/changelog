@@ -7,11 +7,12 @@ bsdgames-nonfree (2.17-4) UNRELEASED; urgency=low
   * debian/control:
     - Build-Depends: debhelper (>= 9), implying a new enough dpkg-dev.
     - Depends: ${misc:Depends}, which debhelper could theoretically populate.
+  * debian/copyright: clean up and convert to DEP5 format 1.0.
   * debian/rules:
     - Minimize further by switching to override_dh_* style.
     - Pass in dpkg's recommended flags, including full hardening flags.
 
- -- Aaron M. Ucko <ucko@debian.org>  Wed, 27 Jun 2012 20:52:03 -0400
+ -- Aaron M. Ucko <ucko@debian.org>  Wed, 27 Jun 2012 21:17:26 -0400
 
 bsdgames-nonfree (2.17-3) unstable; urgency=low
 
