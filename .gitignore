@@ -1,0 +1,14 @@
+*/*.d
+*/*.o
+GNUmakefile
+Makeconfig
+hide-game
+include/bsd-games.h
+install-man
+install-score
+rogue/pathnames.h
+rogue/rogue
+rogue/rogue.6
+subst.rules
+subst.sed
+

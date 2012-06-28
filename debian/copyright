@@ -9,7 +9,7 @@ Files: *
 Copyright: Copyright 1997-2005 Joseph Samuel Myers
 License: BSD
 
-Files: config.params debian/*
+Files: .gitignore config.params debian/*
 Copyright: Copyright 1997-2000 Joey Hess <joeyh@debian.org>,
  2001-2003 Javier Fernandez-Sanguino Peña <jfs@computer.org>,
  2003-2012 Aaron M. Ucko <ucko@debian.org>
