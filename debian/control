@@ -11,7 +11,6 @@ XS-Autobuild: yes
 Package: bsdgames-nonfree
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Conflicts: bsdgames (<< 2.5)
 Suggests: bsdgames
 Description: rogue, the classic dungeon exploration game
  This is a text-based game common on (traditional) BSD systems.  It may
