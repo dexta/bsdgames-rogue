@@ -7,13 +7,14 @@ bsdgames-nonfree (2.17-4) UNRELEASED; urgency=low
   * debian/control:
     - Build-Depends: debhelper (>= 9), implying a new enough dpkg-dev.
     - Depends: ${misc:Depends}, which debhelper could theoretically populate.
+    - Vcs-*: point to (new) personal repository on anonscm.debian.org.
   * debian/copyright: clean up and convert to DEP5 format 1.0.
   * debian/rules:
     - Minimize further by switching to override_dh_* style.
     - Pass in dpkg's recommended flags, including full hardening flags.
   * (debian/).gitignore: ignore generated files.
 
- -- Aaron M. Ucko <ucko@debian.org>  Wed, 27 Jun 2012 21:24:00 -0400
+ -- Aaron M. Ucko <ucko@debian.org>  Wed, 27 Jun 2012 21:35:41 -0400
 
 bsdgames-nonfree (2.17-3) unstable; urgency=low
 
