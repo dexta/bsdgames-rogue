@@ -8,7 +8,7 @@ XS-Autobuild: yes
 
 Package: bsdgames-nonfree
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Conflicts: bsdgames (<< 2.5)
 Suggests: bsdgames
 Description: rogue, the classic dungeon exploration game
