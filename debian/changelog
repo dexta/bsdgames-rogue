@@ -9,13 +9,14 @@ bsdgames-nonfree (2.17-4) UNRELEASED; urgency=low
     - Depends: ${misc:Depends}, which debhelper could theoretically populate.
     - Vcs-*: point to (new) personal repository on anonscm.debian.org.
     - Retire conflict against ancient (pre-split) bsdgames.
+    - Standards-Version: 3.9.3 (now compliant).
   * debian/copyright: clean up and convert to DEP5 format 1.0.
   * debian/rules:
     - Minimize further by switching to override_dh_* style.
     - Pass in dpkg's recommended flags, including full hardening flags.
   * (debian/).gitignore: ignore generated files.
 
- -- Aaron M. Ucko <ucko@debian.org>  Wed, 27 Jun 2012 21:36:59 -0400
+ -- Aaron M. Ucko <ucko@debian.org>  Wed, 27 Jun 2012 21:41:47 -0400
 
 bsdgames-nonfree (2.17-3) unstable; urgency=low
 
