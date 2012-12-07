@@ -1,3 +1,9 @@
+bsdgames-nonfree (2.17-5) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET.
+
+ -- Aaron M. Ucko <ucko@debian.org>  Thu, 06 Dec 2012 21:40:23 -0500
+
 bsdgames-nonfree (2.17-4) unstable; urgency=low
 
   * config.params: defer to debian/rules for build flags (which weren't
