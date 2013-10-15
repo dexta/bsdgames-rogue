@@ -1,3 +1,9 @@
+bsdgames-nonfree (2.17-6) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET.
+
+ -- Aaron M. Ucko <ucko@debian.org>  Tue, 15 Oct 2013 11:02:46 -0400
+
 bsdgames-nonfree (2.17-5) unstable; urgency=high
 
   * rogue/init.c: Give the initial bow a damage value of 1d1 for
