@@ -168,7 +168,7 @@ player_init()
 	obj = alloc_object();
 	obj->what_is = WEAPON;
 	obj->which_kind = BOW;
-	obj->damage = "1d2";
+	obj->damage = "1d1"; /* per object.c; was 1d2 */
 	obj->hit_enchant = 1;
 	obj->d_enchant = 0;
 	obj->identified = 1;

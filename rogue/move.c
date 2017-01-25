@@ -422,7 +422,7 @@ check_hunger(msg_only)
 		Subtract 0, i.e. do nothing.
 		break;*/
 	case -1:
-		rogue.moves_left -= (rogue.moves_left % 2);
+		rogue.moves_left -= m_moves % 2;
 		break;
 	case 0:
 		rogue.moves_left--;
@@ -430,7 +430,7 @@ check_hunger(msg_only)
 	case 1:
 		rogue.moves_left--;
 		(void) check_hunger(1);
-		rogue.moves_left -= (rogue.moves_left % 2);
+		rogue.moves_left -= m_moves % 2;
 		break;
 	case 2:
 		rogue.moves_left--;

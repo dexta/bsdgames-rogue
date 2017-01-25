@@ -1,0 +1,2 @@
+?package(bsdgames-nonfree):needs="text" section="Games/Adventure" \
+	title="Rogue" command="/usr/games/rogue"

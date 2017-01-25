@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+VARDIR=/var/games/bsdgames-nonfree
+SCOREFILES="$VARDIR/rogue.scores"
+OLDDIR=/var/lib/games/bsdgames-nonfree
+
+# See if the files exist in an old pre-FHS directory and move them if so.
+if [ -d $OLDDIR ]; then
+	if [ -e $OLDDIR/rogue.scores ]; then
+		mv -f $OLDDIR/rogue.scores $VARDIR/rogue.scores
+	fi
+fi
+
+# Older versions may have set bad permissions
+chmod a+x $VARDIR
+touch $SCOREFILES
+chown root:games $SCOREFILES
+chmod 664 $SCOREFILES
+
+#DEBHELPER#

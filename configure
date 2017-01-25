@@ -64,6 +64,7 @@ ask () {
     esac
     eval $query_var=\"\$input\"
     subst_vars="$subst_vars $query_var"
+    echo $input
 }
 
 ask_yn () {

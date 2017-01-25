@@ -1,0 +1,22 @@
+Source: bsdgames-nonfree
+Maintainer: Aaron M. Ucko <ucko@debian.org>
+Section: non-free/games
+XS-Autobuild: yes
+Priority: optional
+Build-Depends: debhelper (>= 9),
+               libncurses5-dev
+Standards-Version: 3.9.8
+Vcs-Browser: https://anonscm.debian.org/cgit/users/ucko/bsdgames-nonfree.git
+Vcs-Git: https://anonscm.debian.org/git/users/ucko/bsdgames-nonfree.git
+
+Package: bsdgames-nonfree
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Suggests: bsdgames
+Description: rogue, the classic dungeon exploration game
+ This is a text-based game common on (traditional) BSD systems.  It may
+ not be distributed freely, so it had to be broken off from the main
+ bsdgames package and placed in non-free.
+ .
+ This package now contains only rogue, the classic dungeon exploration game.

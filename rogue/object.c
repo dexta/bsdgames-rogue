@@ -533,6 +533,13 @@ gr_weapon(obj, assign_wk)
 			}
 		}
 	}
+	assign_damage(obj);
+}
+
+void
+assign_damage(obj)
+	object *obj;
+{
 	switch(obj->which_kind) {
 	case BOW:
 	case DART:
@@ -555,6 +562,9 @@ gr_weapon(obj, assign_wk)
 		break;
 	case TWO_HANDED_SWORD:
 		obj->damage = "4d5";
+		break;
+	default:
+		obj->damage = "1d1";
 		break;
 	}
 }

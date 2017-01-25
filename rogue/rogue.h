@@ -464,6 +464,7 @@ void	add_mazes(void);
 void	add_traps(void);
 void	aggravate(void);
 void	aim_monster(object *);
+void    assign_damage(object *);
 void	bounce(short, short, short, short, short);
 void	byebye(int);
 void	c_object_for_wizard(void);

@@ -1,0 +1,378 @@
+bsdgames-nonfree (2.17-7) unstable; urgency=medium
+
+  * debian/control: Canonicalize with the help of cme fix.  In particular,
+    declare Standards-Version: 3.9.8 (already compliant, not that cme checked).
+  * debian/copyright: Canonicalize with the help of cme fix.
+  * debian/.gitignore: +debhelper-build-stamp.
+
+ -- Aaron M. Ucko <ucko@debian.org>  Wed, 25 Jan 2017 00:09:05 -0500
+
+bsdgames-nonfree (2.17-6) unstable; urgency=low
+
+  * rogue/move.c (check_hunger): Achieve every-other-move effects correctly,
+    by consulting m_moves rather than rogue.moves_left.  (Closes: #726195.)
+  * Standards-Version: 3.9.4 (already compliant).
+
+ -- Aaron M. Ucko <ucko@debian.org>  Tue, 15 Oct 2013 11:12:31 -0400
+
+bsdgames-nonfree (2.17-5) unstable; urgency=high
+
+  * rogue/init.c: Give the initial bow a damage value of 1d1 for
+    consistency with object.c; 1d2 was presumably a typo.
+  * rogue/{object.c,rogue.h,save.c}: factor an assign_damage function out
+    of gr_weapon, and call it from read_pack because saved values (raw
+    pointers to string constants) may be invalid.  (The setup was always
+    fragile, and broke altogether when 2.17-4 made the executable
+    position-independent and subject to loading at randomized addresses.)
+    (Closes: #695262.)
+
+ -- Aaron M. Ucko <ucko@debian.org>  Thu, 06 Dec 2012 21:53:01 -0500
+
+bsdgames-nonfree (2.17-4) unstable; urgency=low
+
+  * config.params: defer to debian/rules for build flags (which weren't
+    set quite as intended in noopt mode anyway, per a longstanding typo).
+  * debian/compat: Advance to Debhelper 9.
+  * debian/control:
+    - Build-Depends: debhelper (>= 9), implying a new enough dpkg-dev.
+    - Depends: ${misc:Depends}, which debhelper could theoretically populate.
+    - Vcs-*: point to (new) personal repository on anonscm.debian.org.
+    - Retire conflict against ancient (pre-split) bsdgames.
+    - Standards-Version: 3.9.3 (now compliant).
+  * debian/copyright: clean up and convert to DEP5 format 1.0.
+  * debian/rules:
+    - Minimize further by switching to override_dh_* style.
+    - Pass in dpkg's recommended flags, including full hardening flags.
+  * (debian/).gitignore: ignore generated files.
+
+ -- Aaron M. Ucko <ucko@debian.org>  Wed, 27 Jun 2012 21:43:37 -0400
+
+bsdgames-nonfree (2.17-3) unstable; urgency=low
+
+  * Migrate from CDBS to Debhelper 7.
+  * Explicitly note distinction between main and non-free in debian/copyright.
+  * Declare compliance with Policy 3.8.0.
+
+ -- Aaron M. Ucko <ucko@debian.org>  Sat, 14 Jun 2008 18:10:04 -0400
+
+bsdgames-nonfree (2.17-2) unstable; urgency=low
+
+  * Convert to cdbs and debhelper 6.
+  * Note compliance with current policy (3.7.3).
+  * Set XS-Autobuild: yes, as the license isn't too severely non-free.
+
+ -- Aaron M. Ucko <ucko@debian.org>  Sat, 29 Mar 2008 19:51:53 -0400
+
+bsdgames-nonfree (2.17-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/menu: Properly double-quote command.
+  * debian/watch: Added, to help track future upstream versions.
+
+ -- Aaron M. Ucko <ucko@debian.org>  Fri, 18 Feb 2005 22:09:47 -0500
+
+bsdgames-nonfree (2.16-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/copyright: Update infrastructure copyright to cover 2004.
+  * debian/docs: drop rogue.me (now covered by upstream build system).
+
+ -- Aaron M. Ucko <ucko@debian.org>  Fri, 20 Feb 2004 23:24:21 -0500
+
+bsdgames-nonfree (2.15-2) unstable; urgency=low
+
+  * debian/postinst: Use POSIX-blessed chown syntax. (Closes: #229199)
+  * debian/rules: Tell vrms (and other interested parties) that the
+    license forbids commercial use.
+
+ -- Aaron M. Ucko <ucko@debian.org>  Fri, 23 Jan 2004 19:16:31 -0500
+
+bsdgames-nonfree (2.15-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control: standards-version 3.6.1 (no changes needed).
+  * debian/copyright: rework once more; should now contain all needed info.
+
+ -- Aaron M. Ucko <ucko@debian.org>  Mon, 22 Dec 2003 22:20:30 -0500
+
+bsdgames-nonfree (2.14-2) unstable; urgency=low
+
+  * config.params:
+    - Make setgid games again (supposedly safe now...)
+    - Support "noopt" in DEB_BUILD_OPTIONS.
+    - debian/tmp -> debian/bsdgames-nonfree.
+    - Miscellaneous typo fixes.
+  * configure: Revert changes to defaults (config.params should suffice).
+  * debian/changelog: Removed obsolete emacs settings.
+  * debian/compat: Created (specifying version 4).
+  * debian/control:
+    - New maintainer, with Javier's blessing; my thanks to Joey H. and him
+      for maintaining the package thus far.
+    - Bumped standards version and build dependency on debhelper.
+    - Rewrote description to reflect single-game situation.
+  * debian/copyright:
+    - Updated version number in file name.
+    - Cited recent maintainers.
+    - Generally cleaned up a bit.
+  * debian/docs: New (split out from debian/rules).
+  * debian/postinst: Ensure $VARDIR is actually executable.
+  * debian/rules:
+    - Modernized (various cleanups).
+    - Exclude /usr/games/rogue from call to dh_fixperms.
+
+ -- Aaron M. Ucko <ucko@debian.org>  Wed,  9 Apr 2003 22:20:11 -0400
+
+bsdgames-nonfree (2.14-1) unstable; urgency=high
+
+  * New upstream version:
+      - fixes buffer overflow in rogue (priviledge escalation to
+      'games' since it's setgid)
+      - removes hack (Closes: #188279) 
+  * Note: I'm hurrying this upload due to the security fix for rogue
+  (see SECURITY). However, with the security fix changes 'rogue' will
+  no longer save on empty files. Also, there is no transition done from
+  previous hack save files (which should now be handled by 'bsdgames'
+  which now provides 'hack')
+
+ -- Javier Fernandez-Sanguino Pen~a <jfs@computer.org>  Wed,  9 Apr 2003 10:10:27 +0200
+
+bsdgames-nonfree (2.12-5) unstable; urgency=low
+
+  * Added save/ dir for hack with appropiate permissions (Closes: #174758)
+  * Fixed call to GNUmakefile (it did not clean properly the sources due to
+    GNUMakefile being called instead)
+  * Fixed the debian/rules since it was cleaning files in
+    /var/games/bsdgames-nonfree/hack that were not zero-byte (and might be
+    used by the game)
+
+ -- Javier Fernandez-Sanguino Pen~a <jfs@computer.org>  Wed,  1 Jan 2003 15:06:13 +0100
+
+bsdgames-nonfree (2.12-4) unstable; urgency=low
+
+  * Added Build-Depends (Closes: #174031)
+  * Removed binary files from package when cleaning
+
+ -- Javier Fernandez-Sanguino Pen~a <jfs@computer.org>  Mon, 30 Dec 2002 18:28:48 +0100
+
+bsdgames-nonfree (2.12-3) unstable; urgency=low
+
+  * New maintainer (so it does not disappear from Debian) (Closes: #68086)
+
+ -- Javier Fernandez-Sanguino Pen~a <jfs@computer.org>  Mon, 15 Jan 2001 19:33:45 +0100
+
+bsdgames-nonfree (2.12-2) unstable; urgency=low
+
+  * Much gnashing of teeth.
+
+ -- Joey Hess <joeyh@debian.org>  Sun,  5 Nov 2000 16:33:10 -0800
+
+bsdgames-nonfree (2.12-1) unstable; urgency=low
+
+  * New upstream release. No, I'm not maintianing the package anymore,
+    Debian-QA is - I just happen to be in Debian-QA. (Yeah, Joey.. keep
+    repeating that and maybe someone will believe you.)
+
+ -- Joey Hess <joeyh@master.debian.org>  Tue, 26 Sep 2000 09:38:44 -0700
+
+bsdgames-nonfree (2.11-1) unstable; urgency=low
+
+  * New upstream release. No, I'm not maintianing the package anymore,
+    Debian-QA is - I just happen to be in Debian-QA. (Yeah, Joey.. keep
+    repeating that and maybe someone will believe you.)
+  * Now includes hack, a precursor to nethack.
+
+ -- Joey Hess <joeyh@master.debian.org>  Wed, 19 Apr 2000 14:36:52 -0700
+
+bsdgames-nonfree (2.8-1) unstable; urgency=low
+
+  * New upstream release. No, I'm not maintianing the package anymore, 
+    Debian-QA is - I just happen to be in Debian-QA.
+  * Updated download location.
+  * FHS.
+
+ -- Joey Hess <joeyh@master.debian.org>  Thu,  4 Nov 1999 14:31:06 -0800
+
+bsdgames-nonfree (2.7-1) unstable; urgency=low
+
+  * New upstream release. No, I'm not maintianing the package anymore,
+    Debian-QA is - I just happen to be in Debian-QA.
+
+ -- Joey Hess <joeyh@master.debian.org>  Wed,  7 Apr 1999 00:00:28 -0700
+
+bsdgames-nonfree (2.6-2) unstable; urgency=low
+
+  * Orphaned the package, I'm not maining non-free things anymore.
+
+ -- Joey Hess <joeyh@master.debian.org>  Thu, 18 Mar 1999 14:49:50 -0800
+
+bsdgames-nonfree (2.6-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Joey Hess <joeyh@master.debian.org>  Sun, 20 Dec 1998 01:26:45 -0500
+
+bsdgames-nonfree (2.5-2) unstable; urgency=low
+
+  * Rebuilt with newest debhelper to change how suid binaries are registered.
+
+ -- Joey Hess <joeyh@master.debian.org>  Tue, 27 Oct 1998 20:04:34 -0800
+
+bsdgames-nonfree (2.5-1) unstable; urgency=low
+
+  * New upstream release. Boggle was moved to bsdgames, only rogue remains.
+
+ -- Joey Hess <joeyh@master.debian.org>  Thu, 24 Sep 1998 17:17:43 -0700
+
+bsdgames-nonfree (2.4-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Joey Hess <joeyh@master.debian.org>  Sat,  5 Sep 1998 15:44:05 -0700
+
+bsdgames-nonfree (2.3-3) unstable; urgency=low
+
+  * Make NEWS be a symlink to the upstream changelog, so the file name is
+    preserved.
+
+ -- Joey Hess <joeyh@master.debian.org>  Thu, 20 Aug 1998 15:57:29 -0700
+
+bsdgames-nonfree (2.3-2) unstable; urgency=low
+
+  * Fixed == bashism.
+
+ -- Joey Hess <joeyh@master.debian.org>  Thu, 20 Aug 1998 00:44:44 -0700
+
+bsdgames-nonfree (2.3-1) unstable; urgency=low
+
+  * New upstream release, removing Paranoia because of copyright problems
+    (ie, no copyright), and with security fixes.
+  * Re-enabled sgid bit of rogue becuase of above security fixes.
+  * Reworked how configure script is run, following the author's new docs in
+    PACKAGING.
+  * No longer have to include NEWS in my diff, it's available from upstream,
+    along with some more docs.
+
+ -- Joey Hess <joeyh@master.debian.org>  Wed, 19 Aug 1998 23:07:54 -0700
+
+bsdgames-nonfree (2.1-5) unstable; urgency=low
+
+  * Fixed rogue segfault on startup. Fixed by a simple recompile,
+    but I have no idea how.
+
+ -- Joey Hess <joeyh@master.debian.org>  Wed, 22 Jul 1998 20:31:37 -0700
+
+bsdgames-nonfree (2.1-4) unstable; urgency=low
+
+  * Copied NEWS over from bsdgames. It's really the same upstream changelog
+    for both packages. This lets me install a proper changelog.gz, to shut
+    lintian up. I've asked the author to include NEWS in the package in the
+    future.
+
+ -- Joey Hess <joeyh@master.debian.org>  Fri, 10 Jul 1998 15:30:15 -0700
+
+bsdgames-nonfree (2.1-3) frozen unstable; urgency=medium
+
+  * Reluctantly removed all sgid bits from rogue, becuase there are probably
+    security problems in it. See the TODO, which has a security audit as it's
+    first priority, but explains the difficulties of one.
+  * Added a README.Debian exaplaining this in greater detail.
+
+ -- Joey Hess <joeyh@master.debian.org>  Thu, 18 Jun 1998 10:54:33 -0700
+
+bsdgames-nonfree (2.1-2) frozen unstable; urgency=low
+
+  * Fixed rogue segfault on startup (#22619). Fixed by a simple recompile,
+    but I have no idea how.
+
+ -- Joey Hess <joeyh@master.debian.org>  Sat, 23 May 1998 07:02:53 -0400
+
+bsdgames-nonfree (2.1-1) frozen unstable; urgency=low
+
+  * New upstream bugfix release:
+    - man page for paranoia.
+    - changes to build process that don't affect us.
+    - bugfixes.
+
+ -- Joey Hess <joeyh@master.debian.org>  Mon, 30 Mar 1998 12:32:23 -0800
+
+bsdgames-nonfree (2.0-5) unstable; urgency=low
+
+  * Made score files not be conffiles.
+
+ -- Joey Hess <joeyh@master.debian.org>  Tue, 10 Mar 1998 21:11:23 -0800
+
+bsdgames-nonfree (2.0-4) unstable; urgency=low
+
+  * Added a man page for paranoia.
+  * Don't include paranoia's README anymore, as all info in it is in the new
+    man page as well.
+  * Section non-free/games.
+
+ -- Joey Hess <joeyh@master.debian.org>  Wed, 18 Feb 1998 17:51:50 -0800
+
+bsdgames-nonfree (2.0-3) unstable; urgency=low
+
+  * update standards-version.
+
+ -- Joey Hess <joeyh@master.debian.org>  Mon,  9 Feb 1998 15:52:24 -0800
+
+bsdgames-nonfree (2.0-2) unstable; urgency=low
+
+  * Applied patch from author to fix screen refresh bug after displaying
+    help.
+  * Fixed menu entry for bog.
+
+ -- Joey Hess <joeyh@master.debian.org>  Mon, 29 Dec 1997 16:57:34 -0500
+
+bsdgames-nonfree (2.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Joey Hess <joeyh@master.debian.org>  Fri, 26 Dec 1997 13:15:45 -0500
+
+bsdgames-nonfree (1.5-4) unstable; urgency=low
+
+  * Modified mkdict to exit with return code of zero. This was keeping it
+    from builing properly on the sparc.
+  * Use debhelper.
+
+ -- Joey Hess <joeyh@master.debian.org>  Thu, 11 Dec 1997 00:47:57 -0500
+
+bsdgames-nonfree (1.5-3) unstable; urgency=low
+
+  * Fixed postinst to make sure rogue score file is rw by user games.
+  * Routine update of debian/rules:
+    Fixed binary-indep target.
+
+ -- Joey Hess <joeyh@master.debian.org>  Fri, 12 Sep 1997 21:17:54 -0400
+
+bsdgames-nonfree (1.5-2) unstable; urgency=low
+
+  * Added rogue info to copyright file.
+
+ -- Joey Hess <joeyh@master.debian.org>  Tue,  2 Sep 1997 13:29:50 -0400
+
+bsdgames-nonfree (1.5-1) unstable; urgency=low
+
+  * New upstream release - now with rogue.
+  * Libc6 at last.
+  * Fakeroot fixes.
+  * Pristine upstream source.
+  * Changed how the configure script is run during building, new method
+    is more robust.
+
+ -- Joey Hess <joeyh@master.debian.org>  Mon,  1 Sep 1997 22:41:33 -0400
+
+bsdgames-nonfree (1.4-1) unstable; urgency=low
+
+  * New upstream release -- upstream source now separates these nonfree
+    games out of the main bsdgames source tree.
+  * Converted menufile to menu-1 format.
+
+ -- Joey Hess <joeyh@master.debian.org>  Sat, 22 Mar 1997 01:08:25 -0500
+
+bsdgames-nonfree (1.3-1) unstable; urgency=low
+
+  * First release.
+
+ -- Joey Hess <joeyh@master.debian.org>  Sat, 22 Mar 1997 01:08:25 -0500
