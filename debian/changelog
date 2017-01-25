@@ -1,8 +1,10 @@
 bsdgames-nonfree (2.17-7) UNRELEASED; urgency=medium
 
   * NOT YET RELEASED.
+  * debian/control: Canonicalize with the help of cme fix.  In particular,
+    declare Standards-Version: 3.9.8 (already compliant, not that cme checked).
 
- -- Aaron M. Ucko <ucko@debian.org>  Wed, 25 Jan 2017 00:06:16 -0500
+ -- Aaron M. Ucko <ucko@debian.org>  Wed, 25 Jan 2017 00:07:35 -0500
 
 bsdgames-nonfree (2.17-6) unstable; urgency=low
 
