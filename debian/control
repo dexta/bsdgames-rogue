@@ -5,7 +5,7 @@ XS-Autobuild: yes
 Priority: optional
 Build-Depends: debhelper (>= 11~),
                libncurses-dev
-Standards-Version: 3.9.8
+Standards-Version: 4.3.0
 Vcs-Browser: https://salsa.debian.org/ucko/bsdgames-nonfree
 Vcs-Git: https://salsa.debian.org/ucko/bsdgames-nonfree.git
 Rules-Requires-Root: binary-targets

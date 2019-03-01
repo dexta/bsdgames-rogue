@@ -8,11 +8,12 @@ bsdgames-nonfree (2.17-8) UNRELEASED; urgency=medium
     - Repoint Vcs-* at salsa.
     - Explicitly indicate that binary targets require (fake)root (because
       the executable is setgid games).
+    - Standards-Version: 4.3.0 (compliant at this point).
   * debian/copyright: Note my 2019 contributions.
   * debian/{docs,rules}: Swap roles of ChangeLog and NEWS.
   * debian/rules: Take advantage of /usr/share/dpkg/buildflags.mk.
 
- -- Aaron M. Ucko <ucko@debian.org>  Thu, 28 Feb 2019 22:27:32 -0500
+ -- Aaron M. Ucko <ucko@debian.org>  Thu, 28 Feb 2019 22:28:08 -0500
 
 bsdgames-nonfree (2.17-7) unstable; urgency=medium
 
