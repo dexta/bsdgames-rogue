@@ -5,9 +5,10 @@ bsdgames-nonfree (2.17-8) UNRELEASED; urgency=medium
   * debian/control:
     - Bump debhelper requirement to (>= 11~) accordingly.
     - B-D on libncurses-dev, not transitional libncurses5-dev.
+  * debian/{docs,rules}: Swap roles of ChangeLog and NEWS.
   * debian/rules: Take advantage of /usr/share/dpkg/buildflags.mk.
 
- -- Aaron M. Ucko <ucko@debian.org>  Thu, 28 Feb 2019 22:15:47 -0500
+ -- Aaron M. Ucko <ucko@debian.org>  Thu, 28 Feb 2019 22:19:23 -0500
 
 bsdgames-nonfree (2.17-7) unstable; urgency=medium
 

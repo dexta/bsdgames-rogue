@@ -26,7 +26,7 @@ override_dh_auto_install:
 	cp rogue/CHANGES $(DEB_DESTDIR)/usr/share/doc/$(pkg)/CHANGES.rogue
 
 override_dh_installchangelogs:
-	dh_installchangelogs -k NEWS
+	dh_installchangelogs -k ChangeLog
 
 override_dh_fixperms:
 	dh_fixperms -X/usr/games/rogue
