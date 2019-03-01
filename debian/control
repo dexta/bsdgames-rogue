@@ -3,7 +3,7 @@ Maintainer: Aaron M. Ucko <ucko@debian.org>
 Section: non-free/games
 XS-Autobuild: yes
 Priority: optional
-Build-Depends: debhelper (>= 9),
+Build-Depends: debhelper (>= 11~),
                libncurses5-dev
 Standards-Version: 3.9.8
 Vcs-Browser: https://anonscm.debian.org/cgit/users/ucko/bsdgames-nonfree.git
