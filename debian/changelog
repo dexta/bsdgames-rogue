@@ -2,9 +2,11 @@ bsdgames-nonfree (2.17-8) UNRELEASED; urgency=medium
 
   * NOT RELEASED YET.
   * debian/compat: Advance to Debhelper 11 (from 9).
-  * debian/control: Bump debhelper requirement to (>= 11~) accordingly.
+  * debian/control:
+    - Bump debhelper requirement to (>= 11~) accordingly.
+    - B-D on libncurses-dev, not transitional libncurses5-dev.
 
- -- Aaron M. Ucko <ucko@debian.org>  Thu, 28 Feb 2019 22:07:23 -0500
+ -- Aaron M. Ucko <ucko@debian.org>  Thu, 28 Feb 2019 22:09:20 -0500
 
 bsdgames-nonfree (2.17-7) unstable; urgency=medium
 
