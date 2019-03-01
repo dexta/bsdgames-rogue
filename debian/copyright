@@ -12,7 +12,7 @@ License: BSD-3
 Files: .gitignore config.params debian/*
 Copyright: Copyright 1997-2000 Joey Hess <joeyh@debian.org>,
  2001-2003 Javier Fernandez-Sanguino Peña <jfs@computer.org>,
- 2003-2013, 2017 Aaron M. Ucko <ucko@debian.org>
+ 2003-2013, 2017, 2019 Aaron M. Ucko <ucko@debian.org>
 License: BSD-3
 
 Files: rogue/*
