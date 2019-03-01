@@ -6,10 +6,12 @@ bsdgames-nonfree (2.17-8) UNRELEASED; urgency=medium
     - Bump debhelper requirement to (>= 11~) accordingly.
     - B-D on libncurses-dev, not transitional libncurses5-dev.
     - Repoint Vcs-* at salsa.
+    - Explicitly indicate that binary targets require (fake)root (because
+      the executable is setgid games).
   * debian/{docs,rules}: Swap roles of ChangeLog and NEWS.
   * debian/rules: Take advantage of /usr/share/dpkg/buildflags.mk.
 
- -- Aaron M. Ucko <ucko@debian.org>  Thu, 28 Feb 2019 22:21:12 -0500
+ -- Aaron M. Ucko <ucko@debian.org>  Thu, 28 Feb 2019 22:24:22 -0500
 
 bsdgames-nonfree (2.17-7) unstable; urgency=medium
 
