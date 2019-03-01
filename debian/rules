@@ -4,9 +4,7 @@ DEB_DESTDIR = $(CURDIR)/debian/$(pkg)
 
 export DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
-CFLAGS  := $(shell dpkg-buildflags --get CFLAGS) \
-           $(shell dpkg-buildflags --get CPPFLAGS)
-LDFLAGS := $(shell dpkg-buildflags --get LDFLAGS)
+include /usr/share/dpkg/buildflags.mk
 
 %:
 	dh $@
@@ -15,7 +13,7 @@ override_dh_auto_clean:
 	dh_auto_clean -- -f GNUmakefile distclean
 
 override_dh_auto_configure:
-	bsd_games_cfg_other_cflags="$(CFLAGS)" \
+	bsd_games_cfg_other_cflags="$(CFLAGS) $(CPPFLAGS)" \
 	  bsd_games_cfg_other_ldflags="$(LDFLAGS)" \
 	    ./configure
 
