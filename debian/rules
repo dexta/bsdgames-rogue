@@ -19,7 +19,7 @@ override_dh_auto_configure:
 
 override_dh_auto_install:
 	dh_auto_install -- INSTALL_PREFIX=$(DEB_DESTDIR)
-	-rm -f $(DEB_DESTDIR)/var/games/$(pkg)/rogue.scores 
+	-rm -f $(DEB_DESTDIR)/var/games/$(pkg)/rogue.scores
 	mkdir -p $(DEB_DESTDIR)/usr/share/vrms/reasons
 	echo "$(pkg): No commercial use" \
 	    > $(DEB_DESTDIR)/usr/share/vrms/reasons/$(pkg)
