@@ -3,7 +3,7 @@ Maintainer: Aaron M. Ucko <ucko@debian.org>
 Section: non-free/games
 XS-Autobuild: yes
 Priority: optional
-Build-Depends: debhelper (>= 11~),
+Build-Depends: debhelper-compat (= 13),
                libncurses-dev
 Standards-Version: 4.5.1
 Vcs-Browser: https://salsa.debian.org/ucko/bsdgames-nonfree
