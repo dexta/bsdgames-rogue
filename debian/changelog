@@ -3,6 +3,7 @@ bsdgames-nonfree (2.17-9) UNRELEASED; urgency=medium
   * NOT RELEASED YET.
   * Standards-Version: 4.5.1 (routine-update)
   * debhelper-compat 13 (routine-update)
+  * Remove trailing whitespace in debian/changelog (routine-update)
 
  -- Aaron M. Ucko <ucko@debian.org>  Sat, 06 Feb 2021 23:35:57 -0500
 
@@ -151,7 +152,7 @@ bsdgames-nonfree (2.14-1) unstable; urgency=high
   * New upstream version:
       - fixes buffer overflow in rogue (priviledge escalation to
       'games' since it's setgid)
-      - removes hack (Closes: #188279) 
+      - removes hack (Closes: #188279)
   * Note: I'm hurrying this upload due to the security fix for rogue
   (see SECURITY). However, with the security fix changes 'rogue' will
   no longer save on empty files. Also, there is no transition done from
@@ -209,7 +210,7 @@ bsdgames-nonfree (2.11-1) unstable; urgency=low
 
 bsdgames-nonfree (2.8-1) unstable; urgency=low
 
-  * New upstream release. No, I'm not maintianing the package anymore, 
+  * New upstream release. No, I'm not maintianing the package anymore,
     Debian-QA is - I just happen to be in Debian-QA.
   * Updated download location.
   * FHS.
