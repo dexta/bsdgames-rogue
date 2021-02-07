@@ -6,6 +6,7 @@ bsdgames-nonfree (2.17-9) UNRELEASED; urgency=medium
   * Remove trailing whitespace in debian/changelog (routine-update)
   * Remove trailing whitespace in debian/rules (routine-update)
   * Add salsa-ci file (routine-update)
+  * No tab in license text (routine-update)
 
  -- Aaron M. Ucko <ucko@debian.org>  Sat, 06 Feb 2021 23:35:57 -0500
 
