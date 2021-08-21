@@ -233,7 +233,7 @@ put_scores(monster, other)
 			break;
 		}
 		ne++;
-		if ((!score_only) && (found_player == -1)) {
+		if ((!score_only) && (!have_fun) && (found_player == -1)) {
 			if (!name_cmp(scores[i]+15, login_name)) {
 				x = 5;
 				while (scores[i][x] == ' ') {
@@ -248,7 +248,7 @@ put_scores(monster, other)
 			}
 		}
 	}
-	if (found_player != -1) {
+	if ( (!have_fun) && (found_player != -1) ) {
 		ne--;
 		for (i = found_player; i < ne; i++) {
 			(void) strcpy(scores[i], scores[i+1]);
