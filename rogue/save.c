@@ -185,7 +185,7 @@ restore(fname)
 	read_pack(&level_monsters, fp, 0);
 	read_pack(&level_objects, fp, 0);
 	r_read(fp, (char *) &saved_file_id, sizeof(saved_file_id));
-	if (new_file_id != saved_file_id) {
+	if ( (!save_cheat) && (new_file_id != saved_file_id) ) {
 		clean_up("sorry, saved game is not in the same file");
 	}
 	rw_dungeon(fp, 0);
@@ -221,7 +221,7 @@ restore(fname)
 
 	md_gfmt(fname, &mod_time);	/* get file modification time */
 
-	if (has_been_touched(&saved_time, &mod_time)) {
+	if ( (!save_cheat) && (has_been_touched(&saved_time, &mod_time)) ) {
 		clear();
 		clean_up("sorry, file has been touched");
 	}

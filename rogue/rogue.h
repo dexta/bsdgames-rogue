@@ -757,6 +757,7 @@ extern	boolean	r_teleport;
 extern	boolean	save_is_interactive;
 extern	boolean	score_only;
 extern	boolean	have_fun;
+extern	boolean	save_cheat;
 extern	boolean	see_invisible;
 extern	boolean	sustain_strength;
 extern	boolean	trap_door;

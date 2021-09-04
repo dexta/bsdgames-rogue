@@ -65,6 +65,7 @@ boolean cant_int = 0;
 boolean did_int = 0;
 boolean score_only;
 boolean have_fun;
+boolean save_cheat;
 boolean init_curses = 0;
 boolean save_is_interactive = 1;
 boolean ask_quit = 1;
@@ -269,6 +270,9 @@ do_args(argc, argv)
 					break;
 				case 'f':
 					have_fun = 1;
+					break;
+				case 'c':
+					save_cheat = 1;
 					break;
 				}
 			}
