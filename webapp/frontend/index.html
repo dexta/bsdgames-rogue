@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="stylesheet" href="css/xterm.css" />
+  <script src="js/xterm.js"></script>
+  <script src="js/xterm-addon-fit.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div id="container"></div>
+  <script>
+    const serverAddress = window.location.href||"http://localhost:3000";
+    let socket = {} //io();
+    const term = new Terminal();
+    const fitAddon = new FitAddon.FitAddon();
+    term.loadAddon(fitAddon);
+
+    const startListening = () => {
+      term.onData((data) => {
+        sendInput(data);
+      });
+      socket.on("output", (data) => {
+        write(data);
+      });
+    };
+
+    const write = (text) => {
+      term.write(text);
+    }
+
+    // const promt = () => {
+    //   term.write(`\\r\\n$ `);
+    // };
+
+    const sendInput = (data) => {
+      socket.emit("input", data);
+    };
+
+    const attachTo = (container) => {
+      term.open(container);
+      term.write("Terminal Connected\n\r");
+      term.write("");
+      // prompt();
+    };
+
+    const clear = () => {
+      term.clear();
+    };
+
+    const connectToSocket = (serverAddress) => {
+      return new Promise((res) => {
+        socket = io(serverAddress);
+        res(socket);
+      });
+    };
+
+    const startTerminal = (container, socket) => {
+      attachTo(container);
+      startListening();
+    };
+
+    const start = () => {
+      const container = document.getElementById('container');
+      connectToSocket(serverAddress).then((socket) => {
+        startTerminal(container, socket);
+      });
+    };
+
+    start();
+  </script>
+</body>
+</html>

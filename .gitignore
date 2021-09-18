@@ -11,4 +11,4 @@ rogue/rogue
 rogue/rogue.6
 subst.rules
 subst.sed
-
+*/node_modules
