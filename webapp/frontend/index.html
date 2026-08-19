@@ -1,84 +1,99 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/xterm.css" />
-  <link rel="stylesheet" href="css/effects.css" />
-  <script src="js/xterm.js"></script>
-  <script src="js/xterm-addon-fit.js"></script>
-  <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xterm.js Maschinen-Instanz (Live)</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+    
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #05070a; overflow: hidden;
+            font-family: "JetBrains Mono", "Fira Code", monospace;
+        }
+        #terminal-container { width: 100%; height: 100%; position: relative; }
+        
+        /* Effekte */
+        .crt-effects::before {
+            content: " "; display: block; position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+            background-size: 100% 4px; z-index: 50; pointer-events: none;
+        }
+        .crt-effects { animation: flicker 0.15s infinite; }
+        .crt-effects .xterm-text-layer { text-shadow: 0 0 6px rgba(0, 242, 255, 0.6); }
+        
+        @keyframes flicker {
+            0% { opacity: 0.97; } 50% { opacity: 1; } 100% { opacity: 0.98; }
+        }
+
+        #effect-toggle {
+            position: absolute; top: 15px; right: 25px; z-index: 100;
+            background: #0b0e14; color: #00f2ff; border: 1px solid #00f2ff;
+            padding: 8px 12px; cursor: pointer; font-family: inherit;
+        }
+    </style>
 </head>
 <body>
-  <div id="container"></div>
-  <script>
-    const term = new Terminal({
-            theme: {
-                background: '#05070a', // Deep Void
-                foreground: '#00f2ff', // Tech Cyan
-                cursor: '#00f2ff',
-                selectionBackground: 'rgba(0, 242, 255, 0.3)'
-            },
+
+    <button id="effect-toggle" class="active">[ FX: ON ]</button>
+    <div id="terminal-container" class="crt-effects"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+    
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        // 1. Socket.IO verbinden
+        const socket = io();
+
+        // 2. Terminal initialisieren
+        const term = new Terminal({
+            theme: { background: '#05070a', foreground: '#00f2ff', cursor: '#00f2ff' },
             fontFamily: '"JetBrains Mono", "Fira Code", monospace',
-            fontSize: 15,
-            cursorBlink: true,
-            cursorStyle: 'block'
+            fontSize: 25,
+            cursorBlink: true
         });
 
-        // 2. FitAddon initialisieren (für automatisches Skalieren)
         const fitAddon = new FitAddon.FitAddon();
         term.loadAddon(fitAddon);
-
-        // 3. Terminal in den DOM einhängen
         term.open(document.getElementById('terminal-container'));
         
-        // Initiale Größenberechnung
+        // Initiale Größe berechnen und ans Backend senden
         fitAddon.fit();
+        socket.emit('resize', { cols: term.cols, rows: term.rows });
 
-        // 4. Responsive Skalierung: Bei Fensteränderung Terminalgröße anpassen
+        // 3. Resize-Logik mit Server-Synchronisation
         window.addEventListener('resize', () => {
             fitAddon.fit();
+            // Dem echten Backend-Terminal mitteilen, wie groß das Fenster jetzt ist
+            socket.emit('resize', { cols: term.cols, rows: term.rows });
         });
 
-        // --- Demo Inhalt & Einfache Eingabelogik ---
-        term.writeln('SYSTEM INITIALISIERT...');
-        term.writeln('Lade Module [ OK ]');
-        term.writeln('Verbindung zur Hauptinstanz [ HERGESTELLT ]\r\n');
-        term.write('user@maschinen-instanz:~$ ');
-
-        // Simples Echo-Verhalten für die Demo
-        term.onKey(e => {
-            const ev = e.domEvent;
-            const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
-
-            if (ev.keyCode === 13) { // Enter-Taste
-                term.write('\r\nuser@maschinen-instanz:~$ ');
-            } else if (ev.keyCode === 8) { // Backspace
-                if (term._core.buffer.x > 25) { // Verhindert das Löschen des Prompts
-                    term.write('\b \b');
-                }
-            } else if (printable) {
-                term.write(e.key);
-            }
+        // 4. Daten vom Server (Backend) empfangen und im Terminal anzeigen
+        socket.on('output', (data) => {
+            term.write(data);
         });
 
-        // 5. Effekte umschalten (Toggle-Logik)
+        // 5. Eingaben des Nutzers (Tasten) an den Server senden
+        term.onData((data) => {
+            socket.emit('input', data);
+        });
+
+        // Toggle-Logik (unverändert)
         const toggleBtn = document.getElementById('effect-toggle');
         const termContainer = document.getElementById('terminal-container');
         let effectsActive = true;
-
         toggleBtn.addEventListener('click', () => {
             effectsActive = !effectsActive;
-            if (effectsActive) {
-                termContainer.classList.add('crt-effects');
-                toggleBtn.classList.add('active');
-                toggleBtn.innerText = '[ FX: ON ]';
-            } else {
-                termContainer.classList.remove('crt-effects');
-                toggleBtn.classList.remove('active');
-                toggleBtn.innerText = '[ FX: OFF ]';
-            }
+            termContainer.classList.toggle('crt-effects', effectsActive);
+            toggleBtn.innerText = effectsActive ? '[ FX: ON ]' : '[ FX: OFF ]';
+            toggleBtn.style.color = effectsActive ? '#00f2ff' : '#888899';
+            toggleBtn.style.borderColor = effectsActive ? '#00f2ff' : '#444c56';
         });
-  </script>
+    </script>
 </body>
 </html>
