@@ -3,97 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xterm.js Maschinen-Instanz (Live)</title>
+    <title>BSD Rogue Web</title>
     
     <link rel="stylesheet" href="css/xterm.css" />
-    
     <style>
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #05070a; overflow: hidden;
-            font-family: "JetBrains Mono", "Fira Code", monospace;
-        }
-        #terminal-container { width: 100%; height: 100%; position: relative; }
+        body, html { margin: 0; background: #05070a; color: #00f2ff; font-family: monospace; height: 100%; overflow: hidden; }
         
-        /* Effekte */
-        .crt-effects::before {
-            content: " "; display: block; position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
-            background-size: 100% 4px; z-index: 50; pointer-events: none;
+        /* Login Overlay */
+        #login-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(5, 7, 10, 0.95); z-index: 200;
         }
-        .crt-effects { animation: flicker 0.15s infinite; }
-        .crt-effects .xterm-text-layer { text-shadow: 0 0 6px rgba(0, 242, 255, 0.6); }
-        
-        @keyframes flicker {
-            0% { opacity: 0.97; } 50% { opacity: 1; } 100% { opacity: 0.98; }
+        #login-screen input {
+            background: #0b0e14; color: #00f2ff; border: 1px solid #00f2ff; padding: 10px;
+            font-family: inherit; font-size: 16px; margin-bottom: 10px; outline: none; text-align: center;
+        }
+        #login-screen button {
+            background: #00f2ff; color: #05070a; border: none; padding: 10px 20px;
+            font-family: inherit; font-size: 16px; cursor: pointer; font-weight: bold;
         }
 
-        #effect-toggle {
-            position: absolute; top: 15px; right: 25px; z-index: 100;
-            background: #0b0e14; color: #00f2ff; border: 1px solid #00f2ff;
-            padding: 8px 12px; cursor: pointer; font-family: inherit;
-        }
+        #terminal-container { width: 100%; height: 100%; visibility: hidden; }
     </style>
 </head>
 <body>
 
-    <button id="effect-toggle" class="active">[ FX: ON ]</button>
-    <div id="terminal-container" class="crt-effects"></div>
+    <div id="login-screen">
+        <h2>IDENTIFIKATION ERFORDERLICH</h2>
+        <input type="text" id="username-input" placeholder="Spielername eingeben" autocomplete="off" autofocus />
+        <button id="start-btn">INITIALISIEREN</button>
+        <p style="color:#888; font-size:12px; margin-top:20px;">[ Gamepad wird unterstützt ]</p>
+    </div>
+
+    <div id="terminal-container"></div>
 
     <script src="js/xterm.js"></script>
     <script src="js/addon-fit.js"></script>
-    
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-        // 1. Socket.IO verbinden
         const socket = io();
+        let term, fitAddon;
 
-        // 2. Terminal initialisieren
-        const term = new Terminal({
-            theme: { background: '#05070a', foreground: '#00f2ff', cursor: '#00f2ff' },
-            fontFamily: '"JetBrains Mono", "Fira Code", monospace',
-            fontSize: 25,
-            cursorBlink: true
-        });
+        // --- 1. LOGIN & TERMINAL START ---
+        document.getElementById('start-btn').addEventListener('click', () => {
+            const username = document.getElementById('username-input').value || 'guest';
+            
+            // UI umschalten
+            document.getElementById('login-screen').style.display = 'none';
+            const termContainer = document.getElementById('terminal-container');
+            termContainer.style.visibility = 'visible';
 
-        const fitAddon = new FitAddon.FitAddon();
-        term.loadAddon(fitAddon);
-        term.open(document.getElementById('terminal-container'));
-        
-        // Initiale Größe berechnen und ans Backend senden
-        fitAddon.fit();
-        socket.emit('resize', { cols: term.cols, rows: term.rows });
-
-        // 3. Resize-Logik mit Server-Synchronisation
-        window.addEventListener('resize', () => {
+            // Terminal init
+            term = new Terminal({
+                theme: { background: '#05070a', foreground: '#00f2ff' },
+                fontFamily: '"JetBrains Mono", monospace', fontSize: 16
+            });
+            fitAddon = new FitAddon.FitAddon();
+            term.loadAddon(fitAddon);
+            term.open(termContainer);
             fitAddon.fit();
-            // Dem echten Backend-Terminal mitteilen, wie groß das Fenster jetzt ist
-            socket.emit('resize', { cols: term.cols, rows: term.rows });
+
+            // Event Listener für Terminal
+            term.onData(data => socket.emit('input', data));
+            socket.on('output', data => term.write(data));
+            
+            socket.on('game-over', msg => {
+                term.writeln(`\r\n\x1b[31m[ SYSTEM ] ${msg}\x1b[0m`);
+            });
+
+            window.addEventListener('resize', () => {
+                fitAddon.fit();
+                socket.emit('resize', { cols: term.cols, rows: term.rows });
+            });
+
+            // Spiel auf dem Server starten
+            socket.emit('start-game', { username });
+            
+            // Gamepad-Schleife starten
+            requestAnimationFrame(pollGamepads);
         });
 
-        // 4. Daten vom Server (Backend) empfangen und im Terminal anzeigen
-        socket.on('output', (data) => {
-            term.write(data);
-        });
+        // --- 2. GAMEPAD SUPPORT ---
+        // Mapping: Gamepad-Button-Index zu Rogue-Tasten
+        const GAMEPAD_MAPPING = {
+            12: 'k', // D-Pad Hoch -> Rogue Up
+            13: 'j', // D-Pad Runter -> Rogue Down
+            14: 'h', // D-Pad Links -> Rogue Left
+            15: 'l', // D-Pad Rechts -> Rogue Right
+            0: ' ',  // A-Button -> Leertaste (Weiter/Bestätigen)
+            1: 'i',  // B-Button -> Inventar
+            2: 's',  // X-Button -> Suchen (Search)
+            3: 'S',  // Y-Button -> Speichern (Save)
+        };
 
-        // 5. Eingaben des Nutzers (Tasten) an den Server senden
-        term.onData((data) => {
-            socket.emit('input', data);
-        });
+        // Speichert den Zustand der Buttons, um Spamming zu verhindern (Debouncing)
+        let lastButtonState = {};
 
-        // Toggle-Logik (unverändert)
-        const toggleBtn = document.getElementById('effect-toggle');
-        const termContainer = document.getElementById('terminal-container');
-        let effectsActive = true;
-        toggleBtn.addEventListener('click', () => {
-            effectsActive = !effectsActive;
-            termContainer.classList.toggle('crt-effects', effectsActive);
-            toggleBtn.innerText = effectsActive ? '[ FX: ON ]' : '[ FX: OFF ]';
-            toggleBtn.style.color = effectsActive ? '#00f2ff' : '#888899';
-            toggleBtn.style.borderColor = effectsActive ? '#00f2ff' : '#444c56';
-        });
+        function pollGamepads() {
+            const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+            const gp = gamepads[0]; // Wir nehmen den ersten verbundenen Controller
+
+            if (gp) {
+                gp.buttons.forEach((button, index) => {
+                    const isPressed = button.pressed;
+                    const wasPressed = lastButtonState[index];
+
+                    // Wenn der Button JETZT gedrückt ist, aber im letzten Frame NICHT
+                    if (isPressed && !wasPressed) {
+                        const keyToSend = GAMEPAD_MAPPING[index];
+                        if (keyToSend && term) {
+                            // Sende die Taste ans Backend, als hätte der Nutzer sie getippt
+                            socket.emit('input', keyToSend);
+                        }
+                    }
+                    
+                    // Aktuellen Status für den nächsten Frame speichern
+                    lastButtonState[index] = isPressed;
+                });
+            }
+
+            // Nächster Frame
+            requestAnimationFrame(pollGamepads);
+        }
     </script>
 </body>
 </html>
