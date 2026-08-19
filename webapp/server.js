@@ -56,7 +56,10 @@ io.on('connection', (socket) => {
         // Prüfen, ob eine rogue.save Datei im User-Ordner liegt
         const saveFile = path.join(userDir, 'rogue.save');
         const hasSave = fs.existsSync(saveFile);
-        const rogueArgs = hasSave ? [saveFile] : [];
+        const rogueArgs = ["-c","-f"];
+        if(hasSave) {
+            rogueArgs.push(saveFile);
+        }
 
         console.log(`Starte Rogue für Spieler: "${username}" (Restore: ${hasSave})`);
 
