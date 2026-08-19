@@ -1,7 +1,7 @@
-FROM debian:bullseye AS build
+FROM debian:trixie AS build
 
 RUN apt-get update && apt-get upgrade -y 
-RUN apt-get install -y debian-builder build-essential libncurses5-dev git
+RUN apt-get install -y  pbuilder libncurses5-dev git
 
 RUN mkdir /home/build/ && cd /home/build && git clone https://github.com/dexta/bsdgames-rogue.git .
 WORKDIR /home/build
@@ -13,9 +13,9 @@ RUN ./configure && make
 RUN dpkg-buildpackage -B -d
 RUN dpkg -i /home/bsdgames-nonfree_2.17-9_amd64.deb
 
-FROM node:12-bullseye-slim
+FROM node:24-trixie-slim
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y libncurses6 python build-essential
+RUN apt-get update && apt-get upgrade -y && apt-get install -y libncurses6 python3 build-essential
 
 COPY --from=build /home/bsdgames-nonfree_2.17-9_amd64.deb /home/
 RUN dpkg -i /home/bsdgames-nonfree_2.17-9_amd64.deb
