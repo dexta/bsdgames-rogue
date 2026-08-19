@@ -7,7 +7,19 @@
     
     <link rel="stylesheet" href="css/xterm.css" />
     <style>
-        body, html { margin: 0; background: #05070a; color: #00f2ff; font-family: monospace; height: 100%; overflow: hidden; }
+        body, html {
+           margin: 0; padding: 0; width: 100%; height: 100%;
+           background-color: #05070a; overflow: hidden;
+           font-family: "JetBrains Mono", "Fira Code", monospace;
+        }
+        #terminal-container { width: 100%; height: 100%; position: relative; }
+
+        .crt-effects { animation: flicker 0.15s infinite; }
+        .crt-effects .xterm-text-layer { text-shadow: 0 0 6px rgba(0, 242, 255, 0.6); }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; } 50% { opacity: 1; } 100% { opacity: 0.98; }
+        }    
         
         /* Login Overlay */
         #login-screen {
@@ -15,6 +27,7 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             background: rgba(5, 7, 10, 0.95); z-index: 200;
         }
+        
         #login-screen input {
             background: #0b0e14; color: #00f2ff; border: 1px solid #00f2ff; padding: 10px;
             font-family: inherit; font-size: 16px; margin-bottom: 10px; outline: none; text-align: center;
@@ -23,12 +36,18 @@
             background: #00f2ff; color: #05070a; border: none; padding: 10px 20px;
             font-family: inherit; font-size: 16px; cursor: pointer; font-weight: bold;
         }
+        #effect-toggle {
+            position: absolute; top: 15px; right: 25px; z-index: 100;
+            background: #0b0e14; color: #00f2ff; border: 1px solid #00f2ff;
+            padding: 8px 12px; cursor: pointer; font-family: inherit;
+        }
+
 
         #terminal-container { width: 100%; height: 100%; visibility: hidden; }
     </style>
 </head>
 <body>
-
+    <button id="effect-toggle" class="active">[ FX: ON ]</button>
     <div id="login-screen">
         <h2>IDENTIFIKATION ERFORDERLICH</h2>
         <input type="text" id="username-input" placeholder="Spielername eingeben" autocomplete="off" autofocus />
@@ -36,7 +55,7 @@
         <p style="color:#888; font-size:12px; margin-top:20px;">[ Gamepad wird unterstützt ]</p>
     </div>
 
-    <div id="terminal-container"></div>
+    <div id="terminal-container" class="crt-effects"></div>
 
     <script src="js/xterm.js"></script>
     <script src="js/addon-fit.js"></script>
@@ -57,9 +76,12 @@
 
             // Terminal init
             term = new Terminal({
-                theme: { background: '#05070a', foreground: '#00f2ff' },
-                fontFamily: '"JetBrains Mono", monospace', fontSize: 16
+                theme: { background: '#05070a', foreground: '#00f2ff', cursor: '#00f2ff' },
+                fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                fontSize: 25,
+                cursorBlink: true
             });
+
             fitAddon = new FitAddon.FitAddon();
             term.loadAddon(fitAddon);
             term.open(termContainer);
@@ -84,6 +106,20 @@
             // Gamepad-Schleife starten
             requestAnimationFrame(pollGamepads);
         });
+
+       // Toggle-Logik (unverändert)
+       const toggleBtn = document.getElementById('effect-toggle');
+       const termContainer = document.getElementById('terminal-container');
+       let effectsActive = true;
+       toggleBtn.addEventListener('click', () => {
+           effectsActive = !effectsActive;
+           termContainer.classList.toggle('crt-effects', effectsActive);
+           toggleBtn.innerText = effectsActive ? '[ FX: ON ]' : '[ FX: OFF ]';
+           toggleBtn.style.color = effectsActive ? '#00f2ff' : '#888899';
+           toggleBtn.style.borderColor = effectsActive ? '#00f2ff' : '#444c56';
+        });
+
+
 
         // --- 2. GAMEPAD SUPPORT ---
         // Mapping: Gamepad-Button-Index zu Rogue-Tasten
