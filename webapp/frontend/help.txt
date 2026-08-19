@@ -1,0 +1,23 @@
+?       prints help                     r       read scroll
+/       identify object                 e       eat food
+h       left                            w       wield a weapon
+j       down                            W       wear armor
+k       up                              T       take armor off
+l       right                           P       put on ring
+y       up & left                       R       remove ring
+u       up & right                      d       drop object
+b       down & left                     c       call object
+n       down & right                    <SHIFT><dir>: run that way
+)       print current weapon            <CTRL><dir>: run till adjacent
+]       print current armor             f<dir>  fight till death or near death
+=       print current rings             t<dir>  throw something
+^A      print Hp-raise average          m<dir>  move onto without picking up
+z<dir>  zap a wand in a direction       o       examine/set options
+^<dir>  identify trap type              ^R      redraw screen
+&       save screen into 'rogue.screen' s       search for trap/secret door
+^P      repeat last message             >       go down a staircase
+^[      cancel command                  <       go up a staircase
+S       save game                       .       rest for a turn
+Q       quit                            ,       pick something up
+!       shell escape                    i       inventory
+F<dir>  fight till either of you dies   I       inventory single item
