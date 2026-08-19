@@ -1,72 +1,84 @@
 <!doctype html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/xterm.css" />
+  <link rel="stylesheet" href="css/effects.css" />
   <script src="js/xterm.js"></script>
   <script src="js/xterm-addon-fit.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
+  <!-- <script src="/socket.io/socket.io.js"></script> -->
 </head>
 <body>
   <div id="container"></div>
   <script>
-    const serverAddress = window.location.href||"http://localhost:3000";
-    let socket = {} //io();
-    const term = new Terminal();
-    const fitAddon = new FitAddon.FitAddon();
-    term.loadAddon(fitAddon);
+    const term = new Terminal({
+            theme: {
+                background: '#05070a', // Deep Void
+                foreground: '#00f2ff', // Tech Cyan
+                cursor: '#00f2ff',
+                selectionBackground: 'rgba(0, 242, 255, 0.3)'
+            },
+            fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+            fontSize: 15,
+            cursorBlink: true,
+            cursorStyle: 'block'
+        });
 
-    const startListening = () => {
-      term.onData((data) => {
-        sendInput(data);
-      });
-      socket.on("output", (data) => {
-        write(data);
-      });
-    };
+        // 2. FitAddon initialisieren (für automatisches Skalieren)
+        const fitAddon = new FitAddon.FitAddon();
+        term.loadAddon(fitAddon);
 
-    const write = (text) => {
-      term.write(text);
-    }
+        // 3. Terminal in den DOM einhängen
+        term.open(document.getElementById('terminal-container'));
+        
+        // Initiale Größenberechnung
+        fitAddon.fit();
 
-    // const promt = () => {
-    //   term.write(`\\r\\n$ `);
-    // };
+        // 4. Responsive Skalierung: Bei Fensteränderung Terminalgröße anpassen
+        window.addEventListener('resize', () => {
+            fitAddon.fit();
+        });
 
-    const sendInput = (data) => {
-      socket.emit("input", data);
-    };
+        // --- Demo Inhalt & Einfache Eingabelogik ---
+        term.writeln('SYSTEM INITIALISIERT...');
+        term.writeln('Lade Module [ OK ]');
+        term.writeln('Verbindung zur Hauptinstanz [ HERGESTELLT ]\r\n');
+        term.write('user@maschinen-instanz:~$ ');
 
-    const attachTo = (container) => {
-      term.open(container);
-      term.write("Terminal Connected\n\r");
-      term.write("");
-      // prompt();
-    };
+        // Simples Echo-Verhalten für die Demo
+        term.onKey(e => {
+            const ev = e.domEvent;
+            const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
 
-    const clear = () => {
-      term.clear();
-    };
+            if (ev.keyCode === 13) { // Enter-Taste
+                term.write('\r\nuser@maschinen-instanz:~$ ');
+            } else if (ev.keyCode === 8) { // Backspace
+                if (term._core.buffer.x > 25) { // Verhindert das Löschen des Prompts
+                    term.write('\b \b');
+                }
+            } else if (printable) {
+                term.write(e.key);
+            }
+        });
 
-    const connectToSocket = (serverAddress) => {
-      return new Promise((res) => {
-        socket = io(serverAddress);
-        res(socket);
-      });
-    };
+        // 5. Effekte umschalten (Toggle-Logik)
+        const toggleBtn = document.getElementById('effect-toggle');
+        const termContainer = document.getElementById('terminal-container');
+        let effectsActive = true;
 
-    const startTerminal = (container, socket) => {
-      attachTo(container);
-      startListening();
-    };
-
-    const start = () => {
-      const container = document.getElementById('container');
-      connectToSocket(serverAddress).then((socket) => {
-        startTerminal(container, socket);
-      });
-    };
-
-    start();
+        toggleBtn.addEventListener('click', () => {
+            effectsActive = !effectsActive;
+            if (effectsActive) {
+                termContainer.classList.add('crt-effects');
+                toggleBtn.classList.add('active');
+                toggleBtn.innerText = '[ FX: ON ]';
+            } else {
+                termContainer.classList.remove('crt-effects');
+                toggleBtn.classList.remove('active');
+                toggleBtn.innerText = '[ FX: OFF ]';
+            }
+        });
   </script>
 </body>
 </html>
