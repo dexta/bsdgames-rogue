@@ -2,7 +2,8 @@ window.socket = io();
 window.term = null;
 
 let activeUser = null;
-let terminalFontSize = 18; // Etwas größerer Standardwert
+// Lade gespeicherte Schriftgröße oder setze Standard auf 18
+let terminalFontSize = parseInt(localStorage.getItem('rogue_font_size')) || 18;
 
 const screens = {
     login: document.getElementById('login-screen'),
@@ -16,7 +17,7 @@ function showScreen(name) {
     if(name === 'term') screens[name].style.display = 'block';
 }
 
-// --- 1. PROFIL & SAVE MANAGER ---
+// --- PROFIL & SAVE MANAGER ---
 window.socket.emit('get-players');
 window.socket.on('player-list', (players) => {
     const list = document.getElementById('player-list');
@@ -64,13 +65,12 @@ window.socket.on('save-list', ({ username, saves }) => {
 document.getElementById('back-to-login').onclick = () => { activeUser = null; showScreen('login'); };
 document.getElementById('new-run-btn').onclick = () => bootGame('rogue.save');
 
-// --- 2. TERMINAL BOOT (Fixed 80x24) ---
+// --- TERMINAL BOOT ---
 window.bootGame = function(saveFile) {
     showScreen('term');
     
     window.term = new Terminal({
-        cols: 80, // Fixe Classic Rogue Breite
-        rows: 24, // Fixe Classic Rogue Höhe
+        cols: 80, rows: 24, 
         theme: { background: '#05070a', foreground: '#00f2ff', cursor: '#00f2ff' },
         fontFamily: '"JetBrains Mono", "Fira Code", monospace', 
         fontSize: terminalFontSize, 
@@ -79,15 +79,20 @@ window.bootGame = function(saveFile) {
     
     window.term.open(screens.term);
     
-    // Sende fixe Größe ans Backend
-    window.socket.emit('start-game', { 
-        username: activeUser, 
-        saveFile: saveFile, 
-        cols: 80, 
-        rows: 24 
-    });
+    window.socket.emit('start-game', { username: activeUser, saveFile: saveFile, cols: 80, rows: 24 });
 
-    window.term.onData(data => window.socket.emit('input', data));
+    // Abfangen von physischen Tastatur-Eingaben für das Smart Inventory
+    window.term.onData(data => {
+        if (data === 'i' || data === 'I') {
+            // Sende 'i' ans Backend und zwinge den Scraper zum Auslesen
+            window.socket.emit('input', data);
+            if (typeof window.triggerSmartInventoryScan === 'function') {
+                window.triggerSmartInventoryScan();
+            }
+        } else {
+            window.socket.emit('input', data);
+        }
+    });
 };
 
 window.socket.on('output', data => { if (window.term) window.term.write(data); });
@@ -97,19 +102,19 @@ window.socket.on('game-ended', () => {
     window.socket.emit('get-saves', activeUser);
 });
 
-// --- 3. SYSTEM CONTROLS (in Sidebar) ---
+// --- SYSTEM CONTROLS ---
 document.getElementById('font-plus').onclick = () => {
     if(!window.term) return;
-    // Da wir kein fitAddon mehr haben, können wir die Schrift massiv vergrößern
     terminalFontSize = Math.min(terminalFontSize + 2, 48);
     window.term.options.fontSize = terminalFontSize;
-    // Backend braucht kein Resize-Event, da Columns/Rows bei 80x24 bleiben!
+    localStorage.setItem('rogue_font_size', terminalFontSize);
 };
 
 document.getElementById('font-minus').onclick = () => {
     if(!window.term) return;
     terminalFontSize = Math.max(terminalFontSize - 2, 10);
     window.term.options.fontSize = terminalFontSize;
+    localStorage.setItem('rogue_font_size', terminalFontSize);
 };
 
 let crtOn = true;

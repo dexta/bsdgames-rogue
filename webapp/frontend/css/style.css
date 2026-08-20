@@ -140,6 +140,18 @@ input[type="text"] {
     line-height: 1.1;
     white-space: nowrap;
 }
+
+select.btn {
+    background: #05070a;
+    color: var(--tech-cyan);
+    border: 1px solid var(--border-color);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+select.btn:focus { border-color: var(--tech-cyan); }
+        
 .gp-btn.pressed .act-label { color: #000; font-weight: bold; }
 
 /* Triggers & Schultertasten Positionen */

@@ -87,16 +87,18 @@
         </div>
     </div>
 
-    <div id="config-modal" class="system-panel" style="display:none; position:absolute; top:10%; left:50%; transform:translateX(-50%); z-index: 300;">
+    <div id="config-modal" class="system-panel" style="display:none; position:absolute; top:5%; left:50%; transform:translateX(-50%); z-index: 300; width: 450px;">
         <h2>// GAMEPAD REMAPPING</h2>
-        <select id="layer-select" class="btn" style="width:100%; margin-bottom:15px;">
-            <option value="DEFAULT">LAYER: DEFAULT (Navigation)</option>
-            <option value="L1">LAYER: L1 (Combat/Diag)</option>
-            <option value="R1">LAYER: R1 (Items/Action)</option>
+        <select id="layer-select" class="btn" style="width:100%; margin-bottom:15px; font-weight: bold; text-align: center;">
+            <option value="DEFAULT">--- LAYER: DEFAULT (Navigation) ---</option>
+            <option value="L1">--- LAYER: L1 (Combat / Diag) ---</option>
+            <option value="R1">--- LAYER: R1 (Items / Action) ---</option>
         </select>
-        <div id="mapping-list"></div>
-        <div style="margin-top: 15px; text-align: right;">
-            <button class="btn" id="reset-mapping">RESET</button>
+        
+        <div id="mapping-list" style="max-height: 400px; overflow-y: auto; padding-right: 10px; margin-bottom: 15px;"></div>
+        
+        <div style="display: flex; justify-content: space-between;">
+            <button class="btn" id="reset-mapping" style="color: var(--alert); border-color: var(--alert);">RESET DEFAULTS</button>
             <button class="btn btn-primary" id="close-config">SCHLIESSEN</button>
         </div>
     </div>
