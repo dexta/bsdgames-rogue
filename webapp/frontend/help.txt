@@ -12,7 +12,7 @@ n       down & right                    <SHIFT><dir>: run that way
 ]       print current armor             f<dir>  fight till death or near death
 =       print current rings             t<dir>  throw something
 ^A      print Hp-raise average          m<dir>  move onto without picking up
-z<dir>  zap a wand in a direction       o       examine/set options
+z<dir>  zap a wand in a direction       q       drink portion quaff
 ^<dir>  identify trap type              ^R      redraw screen
 &       save screen into 'rogue.screen' s       search for trap/secret door
 ^P      repeat last message             >       go down a staircase
