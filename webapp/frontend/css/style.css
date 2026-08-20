@@ -1,6 +1,6 @@
 :root {
     --bg-void: #05070a; --panel-bg: #0b0e14; --tech-cyan: #00f2ff;
-    --text-dim: #888899; --border-color: #1a2230; --alert: #ff3366;
+    --text-dim: #888899; --border-color: #1a2230; --alert: #ff3366; --gold: #ffb700;
 }
 
 body, html {
@@ -16,16 +16,16 @@ body, html {
 #terminal-wrapper { 
     flex: 1; 
     position: relative; 
-    min-width: 0; /* Verhindert das Rausdrücken der Sidebar bei großem Content */
+    min-width: 0; 
     display: flex; 
-    align-items: center; /* Zentriert Terminal vertikal */
-    justify-content: center; /* Zentriert Terminal horizontal */
+    align-items: center; 
+    justify-content: center; 
     background: var(--bg-void);
 }
 
 #sidebar {
-    width: 320px; 
-    flex-shrink: 0; /* Verhindert, dass die Sidebar jemals gequetscht wird */
+    width: 360px; /* Leicht verbreitert für bessere Übersicht */
+    flex-shrink: 0; 
     border-left: 1px solid var(--border-color);
     display: flex; flex-direction: column; background: var(--panel-bg);
     z-index: 150;
@@ -33,14 +33,11 @@ body, html {
 
 /* Sidebar Elemente */
 #system-controls {
-    padding: 15px;
+    padding: 12px;
     border-bottom: 1px dashed var(--tech-cyan);
     background: #080b10;
 }
-.control-row {
-    display: flex;
-    gap: 5px;
-}
+.control-row { display: flex; gap: 5px; }
 
 .sidebar-header {
     background: var(--border-color); color: #fff; padding: 8px 12px;
@@ -48,13 +45,12 @@ body, html {
 }
 #inventory-section { flex: 1; overflow-y: auto; border-bottom: 1px dashed var(--border-color); }
 #inventory-list { padding: 10px; font-size: 13px; line-height: 1.6; }
-#controls-section { height: 280px; overflow-y: auto; }
-#controls-list { padding: 10px; font-size: 12px; color: var(--text-dim); }
+#controls-section { height: 310px; overflow-y: auto; background: #06080d; }
 
 .inv-item { display: flex; gap: 10px; padding: 4px 0; border-bottom: 1px solid rgba(0,242,255,0.1); }
 .inv-key { color: #fff; font-weight: bold; min-width: 25px; }
 
-/* CRT FX - Legt sich nur über den Wrapper, nicht über die Sidebar */
+/* CRT FX */
 #crt-overlay {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     pointer-events: none; z-index: 100;
@@ -82,7 +78,7 @@ h1, h2 { margin-top: 0; border-bottom: 1px dashed var(--tech-cyan); padding-bott
 .btn {
     background: var(--panel-bg); border: 1px solid var(--border-color);
     color: var(--tech-cyan); padding: 8px 12px; font-family: inherit;
-    cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+    cursor: pointer; transition: all 0.2s; text-transform: uppercase; font-size: 12px;
 }
 .btn:hover { border-color: var(--tech-cyan); background: rgba(0,242,255,0.1); }
 .btn-primary { background: var(--tech-cyan); color: #000; font-weight: bold; }
@@ -93,73 +89,83 @@ input[type="text"] {
     padding: 10px; font-family: inherit; flex: 1; outline: none;
 }
 
-/* Terminal ist nun ein Block im Zentrierten Wrapper */
 #terminal-container { display: none; padding: 10px; }
 
-.save-item { display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); padding: 5px 10px; margin-bottom: 5px;}
-.mapping-row { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
-.mapping-btn { width: 80px; font-size: 11px; }
-.mapping-btn.listening { background: var(--alert); color: #000; border-color: var(--alert); }
-
-/* --- VISUAL GAMEPAD HUD --- */
+/* --- VERGRÖSSERTES VISUAL GAMEPAD HUD --- */
 #visual-gamepad {
     position: relative;
-    height: 180px;
-    margin: 15px 10px;
+    height: 240px;
+    margin: 15px 12px;
     border: 1px solid var(--border-color);
-    background: #080b10;
-    overflow: hidden;
+    background: #040609;
 }
 
 .gp-btn {
     position: absolute;
     border: 1px solid var(--border-color);
     background: var(--bg-void);
-    color: var(--text-dim);
-    font-size: 10px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: all 0.05s ease; /* Schnelles visuelles Feedback */
+    transition: all 0.05s ease;
 }
 
-/* Aktiver / Gedrückter Zustand */
 .gp-btn.pressed {
     background: var(--tech-cyan);
     color: #000;
     border-color: var(--tech-cyan);
-    box-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+    box-shadow: 0 0 12px rgba(0, 242, 255, 0.8);
 }
 
-/* Das kleine Label unterhalb/neben der Taste für die Aktion */
+/* Modifikator Triggers (L2 / R2) Aktiv-Farbe */
+.gp-l2.pressed, .gp-r2.pressed {
+    background: var(--gold);
+    color: #000;
+    border-color: var(--gold);
+    box-shadow: 0 0 12px rgba(255, 183, 0, 0.8);
+}
+
+/* Das Text-Label unter der Taste (Vergrößert) */
 .act-label {
-    font-size: 8px;
+    font-size: 10px;
     color: var(--tech-cyan);
+    font-weight: normal;
     margin-top: 2px;
     text-transform: uppercase;
     text-align: center;
-    line-height: 1;
+    line-height: 1.1;
+    white-space: nowrap;
 }
-.gp-btn.pressed .act-label { color: #000; }
+.gp-btn.pressed .act-label { color: #000; font-weight: bold; }
 
-/* Positionierungen (Schematischer Xbox/Pro-Controller Aufbau) */
-/* Schultertasten */
-.gp-l1 { top: 10px; left: 20px; width: 60px; height: 20px; border-radius: 4px 0 0 0; }
-.gp-r1 { top: 10px; right: 20px; width: 60px; height: 20px; border-radius: 0 4px 0 0; }
+/* Triggers & Schultertasten Positionen */
+.gp-l2 { top: 8px; left: 15px; width: 75px; height: 24px; border-color: #333d4d; }
+.gp-r2 { top: 8px; right: 15px; width: 75px; height: 24px; border-color: #333d4d; }
 
-/* D-Pad Block */
-.gp-dpad { position: absolute; top: 60px; left: 40px; width: 70px; height: 70px; }
-.gp-dpad .gp-btn { width: 22px; height: 22px; }
-.gp-up { top: 0; left: 24px; }
-.gp-down { bottom: 0; left: 24px; }
-.gp-left { top: 24px; left: 0; }
-.gp-right { top: 24px; right: 0; }
+.gp-l1 { top: 38px; left: 15px; width: 75px; height: 26px; border-radius: 4px 0 0 0; }
+.gp-r1 { top: 38px; right: 15px; width: 75px; height: 26px; border-radius: 0 4px 0 0; }
 
-/* Action Block (A, B, X, Y) */
-.gp-action { position: absolute; top: 60px; right: 40px; width: 70px; height: 70px; }
-.gp-action .gp-btn { width: 24px; height: 24px; border-radius: 50%; }
-.gp-y { top: 0; left: 23px; }
-.gp-a { bottom: 0; left: 23px; }
-.gp-x { top: 23px; left: 0; }
-.gp-b { top: 23px; right: 0; }
+/* D-Pad Block (Vergrößert) */
+.gp-dpad { position: absolute; top: 90px; left: 25px; width: 100px; height: 100px; }
+.gp-dpad .gp-btn { width: 32px; height: 32px; }
+.gp-up { top: 0; left: 34px; }
+.gp-down { bottom: 0; left: 34px; }
+.gp-left { top: 34px; left: 0; }
+.gp-right { top: 34px; right: 0; }
+
+/* Action Block (A, B, X, Y) (Vergrößert) */
+.gp-action { position: absolute; top: 90px; right: 25px; width: 100px; height: 100px; }
+.gp-action .gp-btn { width: 34px; height: 34px; border-radius: 50%; }
+.gp-y { top: 0; left: 33px; }
+.gp-a { bottom: 0; left: 33px; }
+.gp-x { top: 33px; left: 0; }
+.gp-b { top: 33px; right: 0; }
+
+.save-item { display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); padding: 5px 10px; margin-bottom: 5px;}
+.mapping-row { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
+.mapping-btn { width: 80px; font-size: 11px; }
+.mapping-btn.listening { background: var(--alert); color: #000; border-color: var(--alert); }

@@ -1,7 +1,7 @@
-// --- 1. W3C STANDARD NUMMERN ---
-// Jedes standardisierte Gamepad hat dieses genaue Nummern-Layout
+// --- 1. NUMERISCHE W3C/SDL BUTTON INDIZES ---
 const BTN_A = 0, BTN_B = 1, BTN_X = 2, BTN_Y = 3;
 const BTN_L1 = 4, BTN_R1 = 5;
+const BTN_L2 = 6, BTN_R2 = 7; // Triggers für RUN / CTRL-RUN
 const D_UP = 12, D_DOWN = 13, D_LEFT = 14, D_RIGHT = 15;
 
 // Map: Numeric Button-ID -> HTML-Element im HUD
@@ -12,13 +12,15 @@ const HUD_ELEMENTS = {
     [BTN_Y]: document.getElementById('btn-vis-Y'),
     [BTN_L1]: document.getElementById('btn-vis-L1'),
     [BTN_R1]: document.getElementById('btn-vis-R1'),
+    [BTN_L2]: document.getElementById('btn-vis-L2'),
+    [BTN_R2]: document.getElementById('btn-vis-R2'),
     [D_UP]: document.getElementById('btn-vis-UP'),
     [D_DOWN]: document.getElementById('btn-vis-DOWN'),
     [D_LEFT]: document.getElementById('btn-vis-LEFT'),
     [D_RIGHT]: document.getElementById('btn-vis-RIGHT'),
 };
 
-// Die drei Ebenen (Layers) nutzen die numerischen IDs
+// Standard-Ebenen
 const DEFAULT_LAYERS = {
     DEFAULT: {
         [D_UP]: { key: 'k', label: 'Up' }, [D_DOWN]: { key: 'j', label: 'Down' },
@@ -43,52 +45,93 @@ const DEFAULT_LAYERS = {
 let userLayers = JSON.parse(localStorage.getItem('rogue_layers_std')) || JSON.parse(JSON.stringify(DEFAULT_LAYERS));
 let activeLayerName = 'DEFAULT';
 
-// --- 2. GAMEPAD INITIALISIERUNG & DEBUGGING ---
+// --- 2. DETAIL MODI FÜR DAS HUD ---
+// Modes: 'BOTH' (Kürzel + Text), 'KEY' (nur Kürzel), 'LABEL' (nur Text)
+const DETAIL_MODES = ['BOTH', 'KEY', 'LABEL'];
+let currentDetailModeIndex = parseInt(localStorage.getItem('rogue_hud_mode_idx')) || 0;
 
+const hudDetailBtn = document.getElementById('hud-detail-toggle');
+
+function updateDetailBtnText() {
+    const mode = DETAIL_MODES[currentDetailModeIndex];
+    if (hudDetailBtn) hudDetailBtn.innerText = `[ HUD: ${mode} ]`;
+}
+updateDetailBtnText();
+
+if (hudDetailBtn) {
+    hudDetailBtn.onclick = () => {
+        currentDetailModeIndex = (currentDetailModeIndex + 1) % DETAIL_MODES.length;
+        localStorage.setItem('rogue_hud_mode_idx', currentDetailModeIndex);
+        updateDetailBtnText();
+        updateControlsUI(activeLayerName);
+    };
+}
+
+// --- 3. GAMEPAD & INITIALISIERUNG ---
 let gamepadParser = null;
 
-// Prüfen ob ein Controller verbunden/freigeschaltet wurde (Wake-Up)
 window.addEventListener("gamepadconnected", (e) => {
-    console.log(`[HARDWARE] Controller freigeschaltet: ${e.gamepad.id}`);
+    console.log(`[HARDWARE] Controller verbunden: ${e.gamepad.id}`);
 });
 
-window.addEventListener("gamepaddisconnected", (e) => {
-    console.log(`[HARDWARE] Controller getrennt: ${e.gamepad.id}`);
-});
-
-// SDL Datenbank laden
 fetch('gamecontrollerdb.txt')
-    .then(response => {
-        if (!response.ok) throw new Error("Netzwerkantwort war nicht ok");
-        return response.text();
-    })
+    .then(response => response.ok ? response.text() : '')
     .then(dbString => {
-        // Angenommen das Objekt in der window-Umgebung heißt GamepadStandardizer
-        if (typeof GamepadStandardizer !== 'undefined') {
+        if (typeof GamepadStandardizer !== 'undefined' && dbString) {
             gamepadParser = new GamepadStandardizer(dbString);
             console.log('[SYSTEM] SDL Gamepad Database erfolgreich geladen.');
-        } else {
-            console.warn('[SYSTEM] GamepadStandardizer Skript geladen, aber Klasse nicht gefunden.');
         }
     })
-    .catch(err => console.warn('[SYSTEM] Konnte gamecontrollerdb.txt nicht laden (Lokaler Server aktiv?).', err));
+    .catch(err => console.warn('[SYSTEM] gamecontrollerdb.txt nicht geladen.', err));
 
 
-// --- 3. DYNAMISCHE UI AKTUALISIERUNG (HUD) ---
-function updateControlsUI(layerName) {
+// --- 4. DYNAMISCHE UI AKTUALISIERUNG (HUD) ---
+function updateControlsUI(layerName, isShiftHeld = false, isCtrlHeld = false) {
     const header = document.getElementById('controls-header');
-    if(layerName === 'L1') header.innerHTML = '<span style="color:#ff3366">// IO-MAPPING: L1 (COMBAT)</span>';
-    else if(layerName === 'R1') header.innerHTML = '<span style="color:#00ff73">// IO-MAPPING: R1 (ACTION)</span>';
-    else header.innerHTML = '// IO-MAPPING: DEFAULT';
+    if (header) {
+        if (isShiftHeld) header.innerHTML = '<span style="color:#ffb700">// MODUS: RUN (SHIFT)</span>';
+        else if (isCtrlHeld) header.innerHTML = '<span style="color:#ffb700">// MODUS: CTRL-RUN</span>';
+        else if (layerName === 'L1') header.innerHTML = '<span style="color:#ff3366">// LAYER: L1 (COMBAT)</span>';
+        else if (layerName === 'R1') header.innerHTML = '<span style="color:#00ff73">// LAYER: R1 (ACTION)</span>';
+        else header.innerHTML = '// LAYER: DEFAULT';
+    }
 
     const currentMap = userLayers[layerName];
+    const mode = DETAIL_MODES[currentDetailModeIndex];
 
-    for(const [btnId, element] of Object.entries(HUD_ELEMENTS)) {
-        if(!element) continue;
+    for (const [btnIdStr, element] of Object.entries(HUD_ELEMENTS)) {
+        if (!element) continue;
+        const btnId = parseInt(btnIdStr);
+        
+        // Triggers L2/R2 sind statische Modifikatoren
+        if (btnId === BTN_L2 || btnId === BTN_R2) continue;
+
         const labelSpan = element.querySelector('.act-label');
-        if(currentMap[btnId]) {
-            labelSpan.innerText = `[${currentMap[btnId].key}]`;
-            element.title = currentMap[btnId].label;
+        const config = currentMap[btnId];
+
+        if (config) {
+            let keyDisplay = config.key;
+            let labelDisplay = config.label;
+
+            // Dynamische Anzeige beim Halten von L2 / R2
+            if (isShiftHeld && config.key.length === 1 && config.key.match(/[a-z]/)) {
+                keyDisplay = config.key.toUpperCase();
+                labelDisplay = `Run ${config.label}`;
+            } else if (isCtrlHeld && config.key.length === 1 && config.key.match(/[a-z]/)) {
+                keyDisplay = `^${config.key.toUpperCase()}`;
+                labelDisplay = `Ctrl ${config.label}`;
+            }
+
+            // Anzeigemodus anwenden
+            if (mode === 'BOTH') {
+                labelSpan.innerText = `[${keyDisplay}] ${labelDisplay}`;
+            } else if (mode === 'KEY') {
+                labelSpan.innerText = `[${keyDisplay}]`;
+            } else if (mode === 'LABEL') {
+                labelSpan.innerText = labelDisplay;
+            }
+            
+            element.title = `${labelDisplay} (${keyDisplay})`;
         } else {
             labelSpan.innerText = '';
             element.title = 'Unmapped';
@@ -98,34 +141,67 @@ function updateControlsUI(layerName) {
 updateControlsUI('DEFAULT');
 
 
-// --- 4. POLLING LOOP ---
+// --- 5. HILFSFUNKTION FÜR RUN / CTRL-RUN MODIFIKATOREN ---
+function transformKeyForModifiers(baseKey, isShiftHeld, isCtrlHeld) {
+    if (!baseKey) return null;
+
+    // Nur Einzelbuchstaben (Bewegungstasten: h, j, k, l, y, u, b, n) transformieren
+    if (baseKey.length === 1 && baseKey.match(/[a-z]/i)) {
+        const lowerKey = baseKey.toLowerCase();
+        
+        // SHIFT (L2): Verwandelt in Großbuchstabe (z.B. 'h' -> 'H')
+        if (isShiftHeld) {
+            return lowerKey.toUpperCase();
+        }
+        
+        // CTRL (R2): Verwandelt in ASCII Control-Code
+        if (isCtrlHeld) {
+            const charCode = lowerKey.charCodeAt(0);
+            // 'a' ist 97, ASCII Control Code für Ctrl+A ist 1
+            const ctrlCode = charCode - 96; 
+            return String.fromCharCode(ctrlCode);
+        }
+    }
+    
+    return baseKey;
+}
+
+
+// --- 6. POLLING LOOP ---
 let lastBtnState = {};
-// Liste aller Button-IDs, die wir tracken wollen
 const BUTTONS_TO_TRACK = [BTN_A, BTN_B, BTN_X, BTN_Y, BTN_L1, BTN_R1, D_UP, D_DOWN, D_LEFT, D_RIGHT];
 
 function pollGamepad() {
     const rawGamepads = navigator.getGamepads ? navigator.getGamepads() : [];
     let gpRaw = null;
     
-    // Finde den ersten physisch verbundenen Controller
-    for(let i=0; i < rawGamepads.length; i++) {
-        if(rawGamepads[i]) { gpRaw = rawGamepads[i]; break; }
+    for (let i = 0; i < rawGamepads.length; i++) {
+        if (rawGamepads[i]) { gpRaw = rawGamepads[i]; break; }
     }
 
     if (gpRaw) {
-        // Standardizer anwenden, falls geladen
         const gp = gamepadParser ? gamepadParser.standardize(gpRaw) : gpRaw; 
-        
-        // Buttons ist ein Array!
         const buttons = gp.buttons || [];
 
+        // Modifikator Zustände auslesen
         let l1 = buttons[BTN_L1]?.pressed || false;
         let r1 = buttons[BTN_R1]?.pressed || false;
+        let l2_shift = buttons[BTN_L2]?.pressed || false;
+        let r2_ctrl = buttons[BTN_R2]?.pressed || false;
 
+        // Visualisierung für L2/R2
+        if (HUD_ELEMENTS[BTN_L2]) HUD_ELEMENTS[BTN_L2].classList.toggle('pressed', l2_shift);
+        if (HUD_ELEMENTS[BTN_R2]) HUD_ELEMENTS[BTN_R2].classList.toggle('pressed', r2_ctrl);
+
+        // Layer bestimmen
         let newLayer = l1 ? 'L1' : (r1 ? 'R1' : 'DEFAULT');
-        if (newLayer !== activeLayerName) {
+        
+        // UI bei Layer- oder Modifier-Änderung aktualisieren
+        if (newLayer !== activeLayerName || l2_shift !== lastBtnState['_shift'] || r2_ctrl !== lastBtnState['_ctrl']) {
             activeLayerName = newLayer;
-            updateControlsUI(activeLayerName);
+            lastBtnState['_shift'] = l2_shift;
+            lastBtnState['_ctrl'] = r2_ctrl;
+            updateControlsUI(activeLayerName, l2_shift, r2_ctrl);
         }
 
         BUTTONS_TO_TRACK.forEach(btnIndex => {
@@ -133,8 +209,8 @@ function pollGamepad() {
             let wasPressed = lastBtnState[btnIndex] || false;
 
             const uiElement = HUD_ELEMENTS[btnIndex];
-            if(uiElement) {
-                if(isPressed) uiElement.classList.add('pressed');
+            if (uiElement) {
+                if (isPressed) uiElement.classList.add('pressed');
                 else uiElement.classList.remove('pressed');
             }
 
@@ -142,7 +218,11 @@ function pollGamepad() {
                 if (window.term) { 
                     let keyConfig = userLayers[activeLayerName][btnIndex];
                     if (keyConfig && keyConfig.key) {
-                        window.socket.emit('input', keyConfig.key);
+                        // Modifikator anwenden (Shift / Ctrl)
+                        let finalKey = transformKeyForModifiers(keyConfig.key, l2_shift, r2_ctrl);
+                        if (finalKey) {
+                            window.socket.emit('input', finalKey);
+                        }
                     }
                 }
             }
@@ -152,5 +232,4 @@ function pollGamepad() {
     requestAnimationFrame(pollGamepad);
 }
 
-// Start Loop
 requestAnimationFrame(pollGamepad);
