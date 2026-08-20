@@ -100,3 +100,66 @@ input[type="text"] {
 .mapping-row { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
 .mapping-btn { width: 80px; font-size: 11px; }
 .mapping-btn.listening { background: var(--alert); color: #000; border-color: var(--alert); }
+
+/* --- VISUAL GAMEPAD HUD --- */
+#visual-gamepad {
+    position: relative;
+    height: 180px;
+    margin: 15px 10px;
+    border: 1px solid var(--border-color);
+    background: #080b10;
+    overflow: hidden;
+}
+
+.gp-btn {
+    position: absolute;
+    border: 1px solid var(--border-color);
+    background: var(--bg-void);
+    color: var(--text-dim);
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.05s ease; /* Schnelles visuelles Feedback */
+}
+
+/* Aktiver / Gedrückter Zustand */
+.gp-btn.pressed {
+    background: var(--tech-cyan);
+    color: #000;
+    border-color: var(--tech-cyan);
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+}
+
+/* Das kleine Label unterhalb/neben der Taste für die Aktion */
+.act-label {
+    font-size: 8px;
+    color: var(--tech-cyan);
+    margin-top: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1;
+}
+.gp-btn.pressed .act-label { color: #000; }
+
+/* Positionierungen (Schematischer Xbox/Pro-Controller Aufbau) */
+/* Schultertasten */
+.gp-l1 { top: 10px; left: 20px; width: 60px; height: 20px; border-radius: 4px 0 0 0; }
+.gp-r1 { top: 10px; right: 20px; width: 60px; height: 20px; border-radius: 0 4px 0 0; }
+
+/* D-Pad Block */
+.gp-dpad { position: absolute; top: 60px; left: 40px; width: 70px; height: 70px; }
+.gp-dpad .gp-btn { width: 22px; height: 22px; }
+.gp-up { top: 0; left: 24px; }
+.gp-down { bottom: 0; left: 24px; }
+.gp-left { top: 24px; left: 0; }
+.gp-right { top: 24px; right: 0; }
+
+/* Action Block (A, B, X, Y) */
+.gp-action { position: absolute; top: 60px; right: 40px; width: 70px; height: 70px; }
+.gp-action .gp-btn { width: 24px; height: 24px; border-radius: 50%; }
+.gp-y { top: 0; left: 23px; }
+.gp-a { bottom: 0; left: 23px; }
+.gp-x { top: 23px; left: 0; }
+.gp-b { top: 23px; right: 0; }

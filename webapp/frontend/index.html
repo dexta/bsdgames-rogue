@@ -58,7 +58,25 @@
             
             <div id="controls-section">
                 <div class="sidebar-header" id="controls-header">// IO-MAPPING: DEFAULT</div>
-                <div id="controls-list"></div>
+                
+                <div id="visual-gamepad">
+                    <div class="gp-btn gp-l1" id="btn-vis-L1">L1<span class="act-label"></span></div>
+                    <div class="gp-btn gp-r1" id="btn-vis-R1">R1<span class="act-label"></span></div>
+                    
+                    <div class="gp-dpad">
+                        <div class="gp-btn gp-up" id="btn-vis-UP"><span class="act-label"></span></div>
+                        <div class="gp-btn gp-left" id="btn-vis-LEFT"><span class="act-label"></span></div>
+                        <div class="gp-btn gp-right" id="btn-vis-RIGHT"><span class="act-label"></span></div>
+                        <div class="gp-btn gp-down" id="btn-vis-DOWN"><span class="act-label"></span></div>
+                    </div>
+
+                    <div class="gp-action">
+                        <div class="gp-btn gp-y" id="btn-vis-Y">Y<span class="act-label"></span></div>
+                        <div class="gp-btn gp-x" id="btn-vis-X">X<span class="act-label"></span></div>
+                        <div class="gp-btn gp-b" id="btn-vis-B">B<span class="act-label"></span></div>
+                        <div class="gp-btn gp-a" id="btn-vis-A">A<span class="act-label"></span></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -79,6 +97,7 @@
 
     <script src="js/xterm.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="js/gamepad_standardizer.js"></script>
 
     <script src="js/app.js"></script>
     <script src="js/inventory.js"></script>

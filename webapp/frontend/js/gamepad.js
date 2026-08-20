@@ -1,140 +1,156 @@
-// Buttons (Standard Gamepad)
+// --- 1. W3C STANDARD NUMMERN ---
+// Jedes standardisierte Gamepad hat dieses genaue Nummern-Layout
 const BTN_A = 0, BTN_B = 1, BTN_X = 2, BTN_Y = 3;
-const BTN_L1 = 4, BTN_R1 = 5, D_UP = 12, D_DOWN = 13, D_LEFT = 14, D_RIGHT = 15;
+const BTN_L1 = 4, BTN_R1 = 5;
+const D_UP = 12, D_DOWN = 13, D_LEFT = 14, D_RIGHT = 15;
 
-// Die drei Ebenen (Layers)
+// Map: Numeric Button-ID -> HTML-Element im HUD
+const HUD_ELEMENTS = {
+    [BTN_A]: document.getElementById('btn-vis-A'),
+    [BTN_B]: document.getElementById('btn-vis-B'),
+    [BTN_X]: document.getElementById('btn-vis-X'),
+    [BTN_Y]: document.getElementById('btn-vis-Y'),
+    [BTN_L1]: document.getElementById('btn-vis-L1'),
+    [BTN_R1]: document.getElementById('btn-vis-R1'),
+    [D_UP]: document.getElementById('btn-vis-UP'),
+    [D_DOWN]: document.getElementById('btn-vis-DOWN'),
+    [D_LEFT]: document.getElementById('btn-vis-LEFT'),
+    [D_RIGHT]: document.getElementById('btn-vis-RIGHT'),
+};
+
+// Die drei Ebenen (Layers) nutzen die numerischen IDs
 const DEFAULT_LAYERS = {
     DEFAULT: {
-        [D_UP]: { key: 'k', label: 'Move Up' }, [D_DOWN]: { key: 'j', label: 'Move Down' },
-        [D_LEFT]: { key: 'h', label: 'Move Left' }, [D_RIGHT]: { key: 'l', label: 'Move Right' },
-        [BTN_A]: { key: ' ', label: 'Confirm/Next' }, [BTN_B]: { key: 's', label: 'Search' },
+        [D_UP]: { key: 'k', label: 'Up' }, [D_DOWN]: { key: 'j', label: 'Down' },
+        [D_LEFT]: { key: 'h', label: 'Left' }, [D_RIGHT]: { key: 'l', label: 'Right' },
+        [BTN_A]: { key: ' ', label: 'Confirm' }, [BTN_B]: { key: 's', label: 'Search' },
         [BTN_X]: { key: '.', label: 'Rest' }, [BTN_Y]: { key: ',', label: 'Pick up' }
     },
     L1: { // Combat / Diag
         [D_UP]: { key: 'y', label: 'Diag UL' }, [D_DOWN]: { key: 'n', label: 'Diag DR' },
         [D_LEFT]: { key: 'b', label: 'Diag DL' }, [D_RIGHT]: { key: 'u', label: 'Diag UR' },
-        [BTN_A]: { key: 't', label: 'Throw' }, [BTN_B]: { key: 'z', label: 'Zap Wand' },
+        [BTN_A]: { key: 't', label: 'Throw' }, [BTN_B]: { key: 'z', label: 'Zap' },
         [BTN_X]: { key: '<', label: 'Stairs Up' }, [BTN_Y]: { key: '>', label: 'Stairs Down' }
     },
     R1: { // Inventory / Actions
-        [D_UP]: { key: 'w', label: 'Wield Weapon' }, [D_DOWN]: { key: 'W', label: 'Wear Armor' },
-        [D_LEFT]: { key: 'T', label: 'Take off Armor' }, [D_RIGHT]: { key: 'd', label: 'Drop Item' },
-        [BTN_A]: { key: 'e', label: 'Eat' }, [BTN_B]: { key: 'q', label: 'Quaff Potion' },
-        [BTN_X]: { key: 'r', label: 'Read Scroll' }, [BTN_Y]: { key: 'i', label: 'Open Inventory' }
+        [D_UP]: { key: 'w', label: 'Wield' }, [D_DOWN]: { key: 'W', label: 'Wear' },
+        [D_LEFT]: { key: 'T', label: 'Take off' }, [D_RIGHT]: { key: 'd', label: 'Drop' },
+        [BTN_A]: { key: 'e', label: 'Eat' }, [BTN_B]: { key: 'q', label: 'Quaff' },
+        [BTN_X]: { key: 'r', label: 'Read' }, [BTN_Y]: { key: 'i', label: 'Invent' }
     }
 };
 
-// Aus LocalStorage laden
-let userLayers = JSON.parse(localStorage.getItem('rogue_layers')) || JSON.parse(JSON.stringify(DEFAULT_LAYERS));
-
+let userLayers = JSON.parse(localStorage.getItem('rogue_layers_std')) || JSON.parse(JSON.stringify(DEFAULT_LAYERS));
 let activeLayerName = 'DEFAULT';
-let isConfigOpen = false;
-let listeningBtnId = null; 
-let configSelectedLayer = 'DEFAULT';
 
-// --- DYNAMISCHE UI AKTUALISIERUNG (SIDEBAR UNTEN) ---
+// --- 2. GAMEPAD INITIALISIERUNG & DEBUGGING ---
+
+let gamepadParser = null;
+
+// Prüfen ob ein Controller verbunden/freigeschaltet wurde (Wake-Up)
+window.addEventListener("gamepadconnected", (e) => {
+    console.log(`[HARDWARE] Controller freigeschaltet: ${e.gamepad.id}`);
+});
+
+window.addEventListener("gamepaddisconnected", (e) => {
+    console.log(`[HARDWARE] Controller getrennt: ${e.gamepad.id}`);
+});
+
+// SDL Datenbank laden
+fetch('gamecontrollerdb.txt')
+    .then(response => {
+        if (!response.ok) throw new Error("Netzwerkantwort war nicht ok");
+        return response.text();
+    })
+    .then(dbString => {
+        // Angenommen das Objekt in der window-Umgebung heißt GamepadStandardizer
+        if (typeof GamepadStandardizer !== 'undefined') {
+            gamepadParser = new GamepadStandardizer(dbString);
+            console.log('[SYSTEM] SDL Gamepad Database erfolgreich geladen.');
+        } else {
+            console.warn('[SYSTEM] GamepadStandardizer Skript geladen, aber Klasse nicht gefunden.');
+        }
+    })
+    .catch(err => console.warn('[SYSTEM] Konnte gamecontrollerdb.txt nicht laden (Lokaler Server aktiv?).', err));
+
+
+// --- 3. DYNAMISCHE UI AKTUALISIERUNG (HUD) ---
 function updateControlsUI(layerName) {
     const header = document.getElementById('controls-header');
-    const list = document.getElementById('controls-list');
-    
     if(layerName === 'L1') header.innerHTML = '<span style="color:#ff3366">// IO-MAPPING: L1 (COMBAT)</span>';
     else if(layerName === 'R1') header.innerHTML = '<span style="color:#00ff73">// IO-MAPPING: R1 (ACTION)</span>';
     else header.innerHTML = '// IO-MAPPING: DEFAULT';
 
-    list.innerHTML = '';
     const currentMap = userLayers[layerName];
-    for(const [btnId, action] of Object.entries(currentMap)) {
-        list.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-            <span style="color:#fff">BTN ${btnId}</span> <span>${action.label} [${action.key}]</span>
-        </div>`;
+
+    for(const [btnId, element] of Object.entries(HUD_ELEMENTS)) {
+        if(!element) continue;
+        const labelSpan = element.querySelector('.act-label');
+        if(currentMap[btnId]) {
+            labelSpan.innerText = `[${currentMap[btnId].key}]`;
+            element.title = currentMap[btnId].label;
+        } else {
+            labelSpan.innerText = '';
+            element.title = 'Unmapped';
+        }
     }
 }
-updateControlsUI('DEFAULT'); // Init
+updateControlsUI('DEFAULT');
 
-// --- CONFIG MODAL LOGIK ---
-function renderConfigList() {
-    const list = document.getElementById('mapping-list');
-    list.innerHTML = '';
-    const layer = userLayers[configSelectedLayer];
-    
-    for (const [btnId, action] of Object.entries(layer)) {
-        const row = document.createElement('div'); row.className = 'mapping-row';
-        row.innerHTML = `<span>${action.label} (Key: ${action.key})</span>
-                         <button class="btn mapping-btn" id="map-btn-${btnId}">B${btnId}</button>`;
-        list.appendChild(row);
 
-        row.querySelector('button').onclick = (e) => {
-            document.querySelectorAll('.mapping-btn').forEach(b => b.classList.remove('listening'));
-            e.target.classList.add('listening');
-            e.target.innerText = "PRESS...";
-            listeningBtnId = btnId; // Wir warten nun auf einen Druck, um diesen Slot zu überschreiben
-        };
-    }
-}
-
-document.getElementById('config-toggle').onclick = () => {
-    isConfigOpen = !isConfigOpen;
-    document.getElementById('config-modal').style.display = isConfigOpen ? 'block' : 'none';
-    if(isConfigOpen) renderConfigList();
-};
-document.getElementById('close-config').onclick = () => {
-    isConfigOpen = false; listeningBtnId = null;
-    document.getElementById('config-modal').style.display = 'none';
-};
-document.getElementById('layer-select').onchange = (e) => {
-    configSelectedLayer = e.target.value; renderConfigList();
-};
-document.getElementById('reset-mapping').onclick = () => {
-    userLayers = JSON.parse(JSON.stringify(DEFAULT_LAYERS));
-    localStorage.setItem('rogue_layers', JSON.stringify(userLayers));
-    renderConfigList(); updateControlsUI(activeLayerName);
-};
-
-// --- GAMEPAD POLLING LOOP ---
+// --- 4. POLLING LOOP ---
 let lastBtnState = {};
+// Liste aller Button-IDs, die wir tracken wollen
+const BUTTONS_TO_TRACK = [BTN_A, BTN_B, BTN_X, BTN_Y, BTN_L1, BTN_R1, D_UP, D_DOWN, D_LEFT, D_RIGHT];
 
 function pollGamepad() {
-    const gp = navigator.getGamepads ? navigator.getGamepads()[0] : null;
+    const rawGamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+    let gpRaw = null;
+    
+    // Finde den ersten physisch verbundenen Controller
+    for(let i=0; i < rawGamepads.length; i++) {
+        if(rawGamepads[i]) { gpRaw = rawGamepads[i]; break; }
+    }
 
-    if (gp) {
-        let l1 = gp.buttons[BTN_L1].pressed;
-        let r1 = gp.buttons[BTN_R1].pressed;
+    if (gpRaw) {
+        // Standardizer anwenden, falls geladen
+        const gp = gamepadParser ? gamepadParser.standardize(gpRaw) : gpRaw; 
+        
+        // Buttons ist ein Array!
+        const buttons = gp.buttons || [];
 
-        // Welcher Layer ist aktiv?
+        let l1 = buttons[BTN_L1]?.pressed || false;
+        let r1 = buttons[BTN_R1]?.pressed || false;
+
         let newLayer = l1 ? 'L1' : (r1 ? 'R1' : 'DEFAULT');
         if (newLayer !== activeLayerName) {
             activeLayerName = newLayer;
             updateControlsUI(activeLayerName);
         }
 
-        gp.buttons.forEach((button, index) => {
-            let isPressed = button.pressed;
-            let wasPressed = lastBtnState[index];
+        BUTTONS_TO_TRACK.forEach(btnIndex => {
+            let isPressed = buttons[btnIndex]?.pressed || false;
+            let wasPressed = lastBtnState[btnIndex] || false;
+
+            const uiElement = HUD_ELEMENTS[btnIndex];
+            if(uiElement) {
+                if(isPressed) uiElement.classList.add('pressed');
+                else uiElement.classList.remove('pressed');
+            }
 
             if (isPressed && !wasPressed) {
-                // Modus 1: Wir sind im Remapping-Screen und warten auf einen Tastendruck
-                if (isConfigOpen && listeningBtnId !== null && index !== BTN_L1 && index !== BTN_R1) {
-                    // Tausche die Tasten-Belegung in der Konfiguration
-                    let actionToMove = userLayers[configSelectedLayer][listeningBtnId];
-                    delete userLayers[configSelectedLayer][listeningBtnId];
-                    userLayers[configSelectedLayer][index] = actionToMove;
-                    
-                    localStorage.setItem('rogue_layers', JSON.stringify(userLayers));
-                    listeningBtnId = null;
-                    renderConfigList();
-                    updateControlsUI(activeLayerName);
-                } 
-                // Modus 2: Spielen
-                else if (!isConfigOpen && window.term) {
-                    let keyConfig = userLayers[activeLayerName][index];
+                if (window.term) { 
+                    let keyConfig = userLayers[activeLayerName][btnIndex];
                     if (keyConfig && keyConfig.key) {
                         window.socket.emit('input', keyConfig.key);
                     }
                 }
             }
-            lastBtnState[index] = isPressed;
+            lastBtnState[btnIndex] = isPressed;
         });
     }
     requestAnimationFrame(pollGamepad);
 }
+
+// Start Loop
 requestAnimationFrame(pollGamepad);
